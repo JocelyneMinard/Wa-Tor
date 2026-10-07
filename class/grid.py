@@ -7,11 +7,11 @@ class Grid:
     def display(self):
         grid = []
         for i in range(self.size):
-            grid.append(["\033[96m█\033[0m"] * self.size)
+            grid.append(["\033[96m███\033[0m"] * self.size)
 
         for row in grid:
             print("".join(row))
 
 
-my_grid = Grid(10*10)
+my_grid = Grid(20)
 my_grid.display()
