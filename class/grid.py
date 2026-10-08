@@ -12,9 +12,15 @@ class Grid:
         for row in self.grid:
             print("".join(row))
 
-    def affect_entity(self,x, y):
-        self.grid[x][y] = "\033[96m🐟\033[0m"
-        
+    def affect_entity(self,x, y, type):
+        if (type =="fish"):
+            self.grid[x][y] = "\033[96m🐟\033[0m"
+        elif(type == "shark"):
+            self.grid[x][y] = "\033[96m🦈\033[0m"
+        else:
+            print("Fish or Shark idiot!!")
+
+            
     def check_cells(self, x, y):
         pass
 
