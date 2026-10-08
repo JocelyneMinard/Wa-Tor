@@ -9,16 +9,11 @@ class Grid:
         for i in range(self.size):
             grid.append(["\033[96m██\033[0m"] * self.size)
         
-        #grid[15][15] = "\033[96m🐟\033[0m"
-        grid[15][15] = "\033[1m\033[91m\033[106m⋟ \033[0m"
-
-        grid[12][12] = "\033[1;37;106m⪦ \033[0m"
-
         for row in grid:
             print("".join(row))
 
 
-    def neighbor():
+    def check_cel(self, x, y):
         pass
 
 my_grid = Grid(20)
