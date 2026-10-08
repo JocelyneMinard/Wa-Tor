@@ -13,9 +13,9 @@ class Grid:
             print("".join(row))
 
 
-    def check_cel(self, x, y):
+    def check_cells(self, x, y):
         pass
 
-my_grid = Grid(20)
-# les requin et les poisson vont devoir aussi prendre le paramètre de taille pour ne pas sortir de la grille et créer une erreur out of range
-my_grid.display()
+if __name__ == "main":
+    my_grid = Grid(20)
+    my_grid.display()
