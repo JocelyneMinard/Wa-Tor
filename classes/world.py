@@ -24,11 +24,13 @@ class World:
             my_grid.affect_entity(x,y, "shark")
             self.shark_dict[i] = Shark(x,y)
 
-        def get_fish():
+        @property
+        def fish_dict(self):
             return self.fish_dict
 
-        def get_shark():
-            return  self.shark_dict
+        @property
+        def shark_dict(self):
+            return self.shark_dict
 
         my_grid.display()
         
@@ -58,5 +60,9 @@ class World:
             shark.y = new_y
         
         my_grid.display()
+
 my_grid = Grid(20)
 w = World(my_grid, 20)
+
+print(w.fish_dict)
+print(w.shark.dict)
