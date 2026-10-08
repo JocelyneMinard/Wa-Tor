@@ -22,9 +22,36 @@ class World:
             x = random.randint(0, self.grid_size)
             y = random.randint(0, self.grid_size)
             my_grid.affect_entity(x,y, "shark")
-            self.fish_dict[i] = Shark(x,y)
+            self.shark_dict[i] = Shark(x,y)
         
         my_grid.display()
-
+        
+    # mouvement fish and shark
+    def move_entities(self, my_grid):
+        
+        # for fish
+        for fish in self.fish_dict.items():
+            ancien_x, ancien_y = fish.x, fish.y
+            new_x = (ancien_x + random.choice([-1, 0, 1])) % self.grid_size
+            new_y = (ancien_y + random.choice([-1, 0, 1])) % self.grid_size
+            self.my_grid.affect_entity(ancien_x, ancien_y, "empty") 
+            self.my_grid.affect_entity(new_x, new_y, "fish") 
+            fish.x = new_x
+            fish.y = new_y
+            
+            #for shark
+        for shark in self.shark_dict.items():
+            ancien_x, ancien_y = shark.x, shark.y
+            new_x = (ancien_x + random.choice([-1, 0, 1])) % self.grid_size
+            new_y = (ancien_y + random.choice([-1, 0, 1])) % self.grid_size
+            
+            self.my_grid.affect_entity(ancien_x, ancien_y, "empty")
+            self.my_grid.affect_entity(new_x, new_y, "shark")
+            
+            shark.x = new_x
+            shark.y = new_y
+        
+        my_grid.display()
 my_grid = Grid(20)
 w = World(my_grid, 20)
+
