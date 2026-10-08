@@ -1,8 +1,8 @@
 """This is the dedicated file to the Shark Class.
 This file inherits from Fish class"""
 
-import fish
-import grid
+from fish import Fish
+
 
 class Shark (Fish):
     def __init__ (self, x: int, y: int):

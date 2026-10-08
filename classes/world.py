@@ -13,17 +13,23 @@ class World:
         self.shark_dict = {}
 
         for i in range(self.population_init_fish) :
-            x = random.randint(0, self.grid_size)
-            y = random.randint(0, self.grid_size)
+            x = random.randint(0, self.grid_size -1)
+            y = random.randint(0, self.grid_size -1)
             my_grid.affect_entity(x,y, "fish")
             self.fish_dict[i] = Fish(x,y)
 
         for i in range(self.population_init_shark) :
-            x = random.randint(0, self.grid_size)
-            y = random.randint(0, self.grid_size)
+            x = random.randint(0, self.grid_size -1)
+            y = random.randint(0, self.grid_size -1)
             my_grid.affect_entity(x,y, "shark")
             self.shark_dict[i] = Shark(x,y)
-        
+
+        def get_fish():
+            return self.fish_dict
+
+        def get_shark():
+            return  self.shark_dict
+
         my_grid.display()
         
     # mouvement fish and shark
@@ -54,4 +60,3 @@ class World:
         my_grid.display()
 my_grid = Grid(20)
 w = World(my_grid, 20)
-
