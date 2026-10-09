@@ -55,7 +55,7 @@ Run the main file `world.py` with Python.
 | | Créature | Comportement |
 |---|---|---|
 | 🐟 | **Poisson** (fish) | Se déplace sur une case voisine libre et se reproduit après `fish_reproduction_time` cycles. |
-| 🦈 | **Requin** (shark, hérite de Poisson) | Mange les poissons voisins pour regagner de l'énergie, perd de l'énergie à chaque cycle, meurt à 0 et se reproduit après `shark_reproduction_time` cycles. |
+| 🦈 | **Requin** (shark, hérite de Poisson) | Mange les poissons voisins pour regagner de l'énergie, perd de l'énergie à chaque cycle, meurt à 0 et se reproduit après `shark_reproduction_time`. |
 | 🧱 | **Grille** (grid) | La grille torique de `width` x `height` qui stocke les cases. |
 | 🌍 | **Monde** (world) | Lance la simulation et met à jour chaque créature à chaque cycle. |
 
