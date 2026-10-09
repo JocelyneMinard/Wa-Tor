@@ -1,4 +1,5 @@
 # This file manage simlation grid
+import random
 
 class Grid:
     def __init__(self, size: int) -> None:
@@ -30,10 +31,11 @@ class Grid:
         
 
     def move(self, x,y):
-        # Déplacement (par exemple, on avance d'une case vers la droite)
-        dx = 1
-        dy = 0
+
         self.affect_entity(x,y, "empty")
+        # Déplacement (par exemple, on avance d'une case vers la droite)
+        dx = random.randint(0,1)
+        dy = random.randint(0,1)
         # Mise à jour avec "wrapping" (enroulement)
         x = (x + dx) % self.size
         y = (y + dy) % self.size

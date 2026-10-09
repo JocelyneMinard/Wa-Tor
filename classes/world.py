@@ -46,8 +46,11 @@ class World:
         
         my_grid.display()
 
-my_grid = Grid(20)
-w = World(my_grid, 20)
+my_grid = Grid(10)
+w = World(my_grid, 10)
 
-w.move_entities(w.fish_dict)
-w.move_entities(w.shark_dict)
+entities = w.fish_dict | w.shark_dict
+
+for i in range(5):
+    w.move_entities(entities)
+    print(" ")
