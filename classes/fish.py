@@ -32,3 +32,8 @@ class Fish:
     # get_type method to return the type of the entity
     def get_type(self) -> str:
         return "fish"
+
+    def remove_fish(self, fish) -> None:
+        """delete the entity from the dictionary if it exists"""
+        if fish :
+            del fish  # delete the entity from the dictionary
