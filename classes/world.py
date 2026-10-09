@@ -52,7 +52,7 @@ class World:
         my_grid.display()
 
 my_grid = Grid(10)
-w = World(my_grid, 10)git status
+w = World(my_grid, 10)
 
 turn = 0
 while True:
