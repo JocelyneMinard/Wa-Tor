@@ -45,8 +45,8 @@ class Grid:
 
         self.affect_entity(x,y, "empty")
         # Déplacement (par exemple, on avance d'une case vers la droite)
-        dx = random.randint(0,1)
-        dy = random.randint(0,1)
+        dx = random.randint(-1,1)
+        dy = random.randint(-1,1)
         # Mise à jour avec "wrapping" (enroulement)
         x = (x + dx) % self.size
         y = (y + dy) % self.size

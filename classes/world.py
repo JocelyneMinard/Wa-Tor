@@ -3,6 +3,7 @@ from grid import Grid
 from fish import Fish
 from shark import Shark
 import random
+import os, time
 
 class World:
     def __init__(self, my_grid, grid_size) -> None:
@@ -51,10 +52,12 @@ class World:
         my_grid.display()
 
 my_grid = Grid(10)
-w = World(my_grid, 10)
+w = World(my_grid, 10)git status
 
-
-for i in range(5):
-    print(f"--- Tour {i+1} ---")
+turn = 0
+while True:
+    os.system('clear') 
+    turn += 1
+    print(f"--- Tour {turn} ---")
     w.move_entities()
-    print(" ")
+    time.sleep(1)
