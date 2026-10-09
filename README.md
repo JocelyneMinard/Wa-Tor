@@ -35,9 +35,6 @@
 
 Run the main file `world.py` with Python.
 
-### ⚙️ Parameters
-
-`width` · `height` · `fish_reproduction_time` · `shark_reproduction_time` · `starvation`
 
 ### 👥 Members
 
@@ -74,10 +71,6 @@ Run the main file `world.py` with Python.
 ### ▶️ Exécution
 
 Lancer le fichier principal `world.py` avec Python.
-
-### ⚙️ Paramètres
-
-`width` · `height` · `fish_reproduction_time` · `shark_reproduction_time` · `starvation`
 
 ### 👥 Membres
 
