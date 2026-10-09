@@ -36,7 +36,6 @@ class World:
         
     # mouvement fish and shark
     def move_entities(self, my_grid):
-        
         # for fish
         for fish in self.fish_dict.items():
             ancien_x, ancien_y = fish.x, fish.y
