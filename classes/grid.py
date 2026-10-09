@@ -36,10 +36,6 @@ class Grid:
             (1,0),
             (0,-1),
             (0,1)
-            #((x - 1) % self.size, y),  # Up
-            #((x + 1) % self.size, y),  # Down
-            #(x, (y - 1) % self.size),  # Left
-            #(x, (y + 1) % self.size)   # Right
         ]
         
         empty_cells = []
@@ -53,26 +49,6 @@ class Grid:
 
         return empty_cells, occupied_cells, fish_cells
 
-    def move(self,x,y,type):
-        empty_cells, occupied_cells, fish_cells  = self.check_cells(x, y)
-        if(empty_cells != ""):
-            dx, dy = random.choice(empty_cells)
-            self.affect_entity(x,y, "empty")
-        elif type == "shark":
-            if fish_cells:
-                dx, dy = random.choice(fish_cells)
-        elif empty_cells:
-                dx, dy = random.choice(empty_cells)
-
-        else: #fish without empty cells around
-            dx = 0
-            dy = 0
-        
-        # Updating positions with wrapping
-        x = (x + dx) % self.size
-        y = (y + dy) % self.size
-        return(x, y)
-    
         
 if __name__ == "main":
     my_grid = Grid(20)
