@@ -8,18 +8,27 @@ class Fish:
         self.reproduction_time = 8  # Default reproduction time
         self.turn = 0
 
+    #move method to update the position of the fish
     def move(self, x: int, y: int) -> None:
         self.x = x
         self.y = y
 
+    # reproduce method to check if the fish can reproduce
     def reproduce(self) -> bool:
         self.turn += 1
         if self.turn >= self.reproduction_time:
             self.turn = 0
             return True
         return False
+    
+    # get_x method to return the x coordinate of the fish
     def get_x(self) -> int:
         return self.x
     
+    # get_y method to return the y coordinate of the fish
     def get_y(self) -> int:
         return self.y
+    
+    # get_type method to return the type of the entity
+    def get_type(self) -> str:
+        return "fish"
