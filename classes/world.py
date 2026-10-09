@@ -1,4 +1,4 @@
-# This class manage the simulation
+# This class manages the simulation
 from grid import Grid 
 from fish import Fish
 from shark import Shark
@@ -55,8 +55,8 @@ my_grid = Grid(10)
 w = World(my_grid, 10)
 
 turn = 0
-while True:
-    os.system('clear') 
+while turn < 3:
+    #os.system('clear') 
     turn += 1
     print(f"--- Tour {turn} ---")
     w.move_entities()

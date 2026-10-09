@@ -3,7 +3,7 @@ This file inherits from Fish class"""
 
 from fish import Fish
 
-#1 Inherit from Fish class
+#1 Inherits from Fish class
 class Shark (Fish):
     def __init__ (self, x: int, y: int):
         self.x = x
@@ -18,7 +18,7 @@ class Shark (Fish):
                 self.turn = 0
                 return True
             return False
-#3 Define eating 
+#3 Define eating(increases the number of turns left before dying)
     def shark_eating(self,turn,fish):
         if self.x == fish.x and self.y == fish.y:
             self.time_remaining = turn + 7
