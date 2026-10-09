@@ -26,9 +26,20 @@ class Grid:
 
             
     def check_cells(self, x, y):
-        if (x -1, y -1):
-            pass
+        # Vérification des cellules adjacentes (haut, bas, gauche, droite)
+        adjacent_cells = [
+            ((x - 1) % self.size, y),  # Haut
+            ((x + 1) % self.size, y),  # Bas
+            (x, (y - 1) % self.size),  # Gauche
+            (x, (y + 1) % self.size)   # Droite
+        ]
         
+        empty_cells = []
+        for cell in adjacent_cells:
+            if self.grid[cell[0]][cell[1]] == self.style_sea:
+                empty_cells.append(cell)
+        occupied_cells = [cell for cell in adjacent_cells if self.grid[cell[0]][cell[1]] != self.style_sea]
+        return empty_cells, occupied_cells
 
     def move(self, x,y):
 
