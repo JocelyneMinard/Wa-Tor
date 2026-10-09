@@ -35,33 +35,19 @@ class World:
         my_grid.display()
         
     # mouvement fish and shark
-    def move_entities(self, my_grid):
-        # for fish
-        for fish in self.fish_dict.items():
-            ancien_x, ancien_y = fish.x, fish.y
-            new_x = (ancien_x + random.choice([-1, 0, 1])) % self.grid_size
-            new_y = (ancien_y + random.choice([-1, 0, 1])) % self.grid_size
-            self.my_grid.affect_entity(ancien_x, ancien_y, "empty") 
-            self.my_grid.affect_entity(new_x, new_y, "fish") 
-            fish.x = new_x
-            fish.y = new_y
-            
-            #for shark
-        for shark in self.shark_dict.items():
-            ancien_x, ancien_y = shark.x, shark.y
-            new_x = (ancien_x + random.choice([-1, 0, 1])) % self.grid_size
-            new_y = (ancien_y + random.choice([-1, 0, 1])) % self.grid_size
-            
-            self.my_grid.affect_entity(ancien_x, ancien_y, "empty")
-            self.my_grid.affect_entity(new_x, new_y, "shark")
-            
-            shark.x = new_x
-            shark.y = new_y
+    def move_entities(self, entity):
+        for entity_id, entity_obj in entity.items():
+            x = entity_obj.get_x()
+            y = entity_obj.get_y()
+            type = entity_obj.get_type()
+            new_coord = my_grid.move(x, y)
+            my_grid.affect_entity(new_coord[0],new_coord[1], type)
+           
         
         my_grid.display()
 
 my_grid = Grid(20)
 w = World(my_grid, 20)
 
-print(w.fish_dict)
-print(w.shark.dict)
+w.move_entities(w.fish_dict)
+w.move_entities(w.shark_dict)

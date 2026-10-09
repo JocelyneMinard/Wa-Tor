@@ -3,10 +3,13 @@
 class Grid:
     def __init__(self, size: int) -> None:
         self.size = size
+        self.style_sea = "\033[96m██\033[0m"
+        self.style_fish = "\033[96m🐟\033[0m"
+        self.style_shark = "\033[96m🦈\033[0m"
         self.init_grid()
 
     def init_grid(self):
-        self.grid = [["\033[96m██\033[0m" for _ in range(self.size)] for _ in range(self.size)]
+        self.grid = [[self.style_sea for _ in range(self.size)] for _ in range(self.size)]
 
     def display(self):
         for row in self.grid:
@@ -14,15 +17,29 @@ class Grid:
 
     def affect_entity(self,x, y, type):
         if (type =="fish"):
-            self.grid[x][y] = "\033[96m🐟\033[0m"
+            self.grid[x][y] = self.style_fish
         elif(type == "shark"):
-            self.grid[x][y] = "\033[96m🦈\033[0m"
+            self.grid[x][y] = self.style_shark
         else:
-            print("Fish or Shark idiot!!")
+            self.grid[x][y] = self.style_sea
 
             
     def check_cells(self, x, y):
-        pass
+        if (x -1, y -1):
+            pass
+        
+
+    def move(self, x,y):
+        # Déplacement (par exemple, on avance d'une case vers la droite)
+        dx = 1
+        dy = 0
+        self.affect_entity(x,y, "empty")
+        # Mise à jour avec "wrapping" (enroulement)
+        x = (x + dx) % self.size
+        y = (y + dy) % self.size
+        
+        return(x, y)
+
 
 if __name__ == "main":
     my_grid = Grid(20)
