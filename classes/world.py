@@ -24,23 +24,27 @@ class World:
             my_grid.affect_entity(x,y, "shark")
             self.shark_dict[i] = Shark(x,y)
 
-        @property
-        def fish_dict(self):
-            return self.fish_dict
-
-        @property
-        def shark_dict(self):
-            return self.shark_dict
-
         my_grid.display()
-        
+
+
+    @property
+    def all_entities(self):
+        self.all_entities_dict = {}
+        for fid, fobj in self.fish_dict.items():
+            self.all_entities_dict[("fish", fid)] = fobj
+        for sid, sobj in self.shark_dict.items():
+            self.all_entities_dict[("shark", sid)] = sobj
+        return self.all_entities_dict
+
     # mouvement fish and shark
-    def move_entities(self, entity):
-        for entity_id, entity_obj in entity.items():
+    def move_entities(self):
+        for entity_id, entity_obj in self.all_entities.items():
             x = entity_obj.get_x()
             y = entity_obj.get_y()
             type = entity_obj.get_type()
             new_coord = my_grid.move(x, y)
+            entity_obj.x = new_coord[0]
+            entity_obj.y = new_coord[1]
             my_grid.affect_entity(new_coord[0],new_coord[1], type)
            
         
@@ -49,8 +53,8 @@ class World:
 my_grid = Grid(10)
 w = World(my_grid, 10)
 
-entities = w.fish_dict | w.shark_dict
 
 for i in range(5):
-    w.move_entities(entities)
+    print(f"--- Tour {i+1} ---")
+    w.move_entities()
     print(" ")
