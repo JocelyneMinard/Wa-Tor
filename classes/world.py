@@ -43,7 +43,7 @@ class World:
             x = entity_obj.get_x()
             y = entity_obj.get_y()
             type = entity_obj.get_type()
-            new_coord = my_grid.move(x, y)
+            new_coord = my_grid.move(x, y, type)
             entity_obj.x = new_coord[0]
             entity_obj.y = new_coord[1]
             my_grid.affect_entity(new_coord[0],new_coord[1], type)
@@ -51,8 +51,8 @@ class World:
         
         my_grid.display()
 
-my_grid = Grid(10)
-w = World(my_grid, 10)
+my_grid = Grid(5)
+w = World(my_grid, 5)
 
 turn = 0
 while turn < 3:

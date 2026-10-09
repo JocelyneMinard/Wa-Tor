@@ -53,11 +53,21 @@ class Grid:
 
         return empty_cells, occupied_cells, fish_cells
 
-    def move(self, x,y):
+    def move(self,x,y,type):
         empty_cells, occupied_cells, fish_cells  = self.check_cells(x, y)
         if(empty_cells != ""):
             dx, dy = random.choice(empty_cells)
-        self.affect_entity(x,y, "empty")
+            self.affect_entity(x,y, "empty")
+        elif type == "shark":
+            if fish_cells:
+                dx, dy = random.choice(fish_cells)
+        elif empty_cells:
+                dx, dy = random.choice(empty_cells)
+
+        else: #fish without empty cells around
+            dx = 0
+            dy = 0
+        
         # Updating positions with wrapping
         x = (x + dx) % self.size
         y = (y + dy) % self.size

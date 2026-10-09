@@ -22,6 +22,7 @@ class Shark (Fish):
     def shark_eating(self,turn,fish):
         if self.x == fish.x and self.y == fish.y:
             self.time_remaining = turn + 7
+            del fish
             return True  
 #4 Define shark's death
     def shark_starvation_time(self,turn,shark):
