@@ -8,8 +8,8 @@ import pprint
 
 class World:
     def __init__(self, my_grid, grid_size) -> None:
-        self.population_init_fish = 10
-        self.population_init_shark = 1
+        self.population_init_fish = 1
+        self.population_init_shark = 0
         self.grid_size = grid_size
         self.fish_dict = {}
         self.shark_dict = {}
@@ -51,7 +51,7 @@ class World:
         y = entity.get_y()
         type = entity.get_type()
         empty_cells, fish_cells, shark_cell  = my_grid.check_cells(x, y)
-        print(fish_cells)
+        print(empty_cells)
         match type:
             case "fish":
                 if(empty_cells != ""):

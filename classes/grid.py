@@ -39,22 +39,23 @@ class Grid:
         adjacent_cells = []
 
         for cells in possible_cells:
-            adjacent_cells.append((x+cells[0], y + cells[1]))
+            adjacent_cells.append(x+cells[0], y + cells[1])
 
         empty_cells = []
         fish_cells = []
         shark_cells = []
+        print(f"grid : {self.grid}")
+        print(f"{adjacent_cells}")
 
         for y, row in enumerate(adjacent_cells):
             for x, cell in enumerate(row):
-                print(cell)
-                if cell == self.style_sea:
+                if self.check_cell(x,y) == self.style_sea:
                     empty_cells.append((x, y))
-                elif cell == self.style_fish:
+                elif self.check_cell(x,y) == self.style_fish:
                     fish_cells.append((x, y))
                 else:
                     shark_cells.append((x, y))
-            
+                
         return empty_cells, fish_cells, shark_cells
 
     def check_grid(self):
@@ -70,4 +71,9 @@ class Grid:
 if __name__ == "main":
     my_grid = Grid(20)
     my_grid.display()
-
+my_grid = Grid(10)
+my_grid.affect_entity(0, 0, "fish")
+my_grid.affect_entity(0, 1, "fish")
+my_grid.display()
+print(f"check_cell {my_grid.check_cell(0,0)}")
+my_grid.check_cells(0,0)
