@@ -61,11 +61,18 @@ class Grid:
         return empty_cells, fish_cells
 
     def check_grid(self):
-        my_grid_empty_cells = []
-        for y, row in enumerate(self.grid):
-            for x, cell in enumerate(row):
-                if cell == self.style_sea:
-                    my_grid_empty_cells.append((x, y))
+        # Conserver uniquement le print principal si nécessaire pour le debug
+        print("Vérification de la grille et recherche des cases vides.")
+        
+        # Compréhension de liste imbriquée pour extraire les coordonnées (x, y)
+        my_grid_empty_cells = [
+            (x, y) 
+            for y, row in enumerate(self.grid) 
+            for x, cell in enumerate(row) 
+            if cell == self.style_sea
+        ]
+
+        print(my_grid_empty_cells)
         return my_grid_empty_cells
 
 
@@ -76,7 +83,7 @@ if __name__ == "__main__":
     my_grid.affect_entity(1, 0, "fish")
     my_grid.display()
     
-    empty, fish, shark = my_grid.check_cells(0, 0)
+    empty, fish = my_grid.check_possible_moves(0, 0)
     print(f"Cases vides autour de (0,0) : {empty}")
     print(f"Poissons autour de (0,0) : {fish}")
-    print(f"Requins autour de (0,0) : {shark}")
+    my_grid.check_grid()

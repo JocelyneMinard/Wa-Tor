@@ -4,40 +4,36 @@ from fish import Fish
 from shark import Shark
 import random
 import os, time
-import pprint
 
 class World:
     def __init__(self, my_grid, grid_size) -> None:
         self.population_init_fish = 30
         self.population_init_shark = 1
+        self.my_grid = my_grid  # Stockage de la grille dans l'instance
         self.grid_size = grid_size
         self.fish_dict = {}
         self.shark_dict = {}
         my_grid_empty_cells = my_grid.check_grid()
 
-        for i in range(self.population_init_fish) :
-            if(my_grid_empty_cells):
+        if self.population_init_fish >= self.grid_size:
+            self.population_init_fish = int(self.population_init_fish * 0.7)
+            print(self.population_init_fish)
+        for i in range(self.population_init_fish):
+            if my_grid_empty_cells:
                 x, y = random.choice(my_grid_empty_cells)
-                my_grid.affect_entity(x, y, "fish")
-                self.fish_dict[i] = Fish(x,y)
+                my_grid_empty_cells.remove((x, y))  # CORRECTION: On enlève la case pour éviter les doublons
+                self.my_grid.affect_entity(x, y, "fish")
+                self.fish_dict[i] = Fish(x, y)
 
-        for i in range(self.population_init_shark) :
-            if(my_grid_empty_cells):
+        # Remplissage des Requins
+        for i in range(self.population_init_shark):
+            if my_grid_empty_cells:
                 x, y = random.choice(my_grid_empty_cells)
-                my_grid.affect_entity(x,y, "shark")
-                self.shark_dict[i] = Shark(x,y)
-
+                my_grid_empty_cells.remove((x, y))  # CORRECTION: On enlève la case
+                self.my_grid.affect_entity(x, y, "shark")
+                self.shark_dict[i] = Shark(x, y)
         my_grid.display()
 
-
-    @property
-    def all_entities(self):
-        self.all_entities_dict = {}
-        for fid, fobj in self.fish_dict.items():
-            self.all_entities_dict[("fish", fid)] = fobj
-        for sid, sobj in self.shark_dict.items():
-            self.all_entities_dict[("shark", sid)] = sobj
-        return self.all_entities_dict
 
     # mouvement fish and shark
     def move_entities(self):
@@ -55,9 +51,7 @@ class World:
 
         match type:
             case "fish":
-                print(empty_cells)
                 if(empty_cells):
-                    print("pass not empty")
                     dx, dy = random.choice(empty_cells)
                     my_grid.affect_entity(x, y, "empty")
                 else: 
@@ -75,8 +69,11 @@ class World:
                         if fobj.get_x() == target_x and fobj.get_y() == target_y:
                             Fish.remove_fish(self, self.fish_dict, fid)
                             break
-                elif(empty_cells != ""):
+                elif(empty_cells):
                     dx, dy = random.choice(empty_cells)
+                else:
+                    dy = 0
+                    dx = 0
                 my_grid.affect_entity(x, y, "empty")
 
         # Updating positions with wrapping
@@ -88,12 +85,13 @@ class World:
         return(x, y)
         
 
-my_grid = Grid(5)
-w = World(my_grid, 5)
+grid_size = 5
+my_grid = Grid(grid_size)
+w = World(my_grid, grid_size)
 
 
 turn = 0
-while turn < 30:
+while turn < 10:
     #os.system('clear') 
     turn += 1
     print(f"--- Tour {turn} ---")
