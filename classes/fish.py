@@ -33,7 +33,7 @@ class Fish:
     def get_type(self) -> str:
         return "fish"
 
-    def remove_fish(self, fish) -> None:
+    def remove_fish(self, fish_dict: dict, fish_id: int) -> None:
         """delete the entity from the dictionary if it exists"""
-        if fish :
-            del fish  # delete the entity from the dictionary
+        if fish_id in fish_dict:
+            del fish_dict[fish_id]  # really removes the fish from the dictionary
