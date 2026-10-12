@@ -56,10 +56,18 @@ class Grid:
 
     def check_grid(self):
         my_grid_empty_cells = []
-        for cell in self.grid:
-            print(cell)
-            if cell == self.style_sea:
-                my_grid_empty_cells.append(cell)
+        coords = []
+        for y, row in enumerate(self.grid):
+            for x, cell in enumerate(row):
+                if cell == self.style_sea:
+                    my_grid_empty_cells.append(cell)
+                    coords.append((x, y))
+
+                print(f"{'x':>4} | {'y':>4}")
+                print("-" * 11)
+                for x, y in coords:
+                    print(f"{x:>4} | {y:>4}")
+
         return my_grid_empty_cells
 
         
