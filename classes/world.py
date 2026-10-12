@@ -4,6 +4,7 @@ from fish import Fish
 from shark import Shark
 import random
 import os, time
+import pprint
 
 class World:
     def __init__(self, my_grid, grid_size) -> None:
@@ -67,7 +68,7 @@ class World:
                      # Trouver et supprimer le poisson du dictionnaire
                     for fid, fobj in list(self.fish_dict.items()):
                         if fobj.get_x() == target_x and fobj.get_y() == target_y:
-                            del self.fish_dict[fid]
+                            Fish.remove_fish(self, self.fish_dict, fid)
                             break
                 elif empty_cells:
                     dx, dy = random.choice(empty_cells)
@@ -91,4 +92,11 @@ while turn < 10:
     turn += 1
     print(f"--- Tour {turn} ---")
     w.move_entities()
+    print(my_grid.grid)
+    for keys,values in w.fish_dict.items():
+        print(keys)
+        print(values.__str__())
+    for keys,values in w.shark_dict.items():
+            print(keys)
+            print(values.__str__())
     time.sleep(1)

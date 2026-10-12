@@ -12,6 +12,9 @@ class Shark (Fish):
         self.turn = 0
         self.time_remaining = 16
         self.turn += 1
+
+    def __str__(self):
+        return str(self.x) + ": " + str(self.y)
 #2 Reproduction time
     def reproduce_shark(self) -> bool:
             if self.turn >= self.reproduction_time:

@@ -8,6 +8,9 @@ class Fish:
         self.reproduction_time = 8  # Default reproduction time
         self.turn = 0
 
+    def __str__(self):
+        return str(self.x) + ": " + str(self.y)
+    
     #move method to update the position of the fish
     def move(self, x: int, y: int) -> None:
         self.x = x
