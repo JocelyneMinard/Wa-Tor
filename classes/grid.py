@@ -18,38 +18,55 @@ class Grid:
 
     def affect_entity(self,x, y, type):
         if (type =="fish"):
-            self.grid[x][y] = self.style_fish
+            self.grid[y][x] = self.style_fish
         elif(type == "shark"):
-            self.grid[x][y] = self.style_shark
+            self.grid[y][x] = self.style_shark
         else:
-            self.grid[x][y] = self.style_sea
+            self.grid[y][x] = self.style_sea
 
-            
+    def check_cell(self, x, y):
+        return self.grid[y][x] 
+    
     def check_cells(self, x, y):
         # Verifying neighbouring cells
-        adjacent_cells = [
-            (1,1),
-            (1,-1),
-            (-1,1),
-            (-1,-1),
+        possible_cells = [
             (-1,0),
             (1,0),
             (0,-1),
             (0,1)
         ]
-        
+
+        adjacent_cells = []
+
+        for cells in possible_cells:
+            adjacent_cells.append((x+cells[0], y + cells[1]))
+
         empty_cells = []
+        fish_cells = []
+        shark_cells = []
         for cell in adjacent_cells:
-            if self.grid[cell[0]][cell[1]] == self.style_sea:
+            if self.grid[cell[1]][cell[0]] == self.style_sea:
                 empty_cells.append(cell)
+            elif self.grid[cell[1]][cell[0]] == self.style_fish:
+                fish_cells.append(cell)
+            else:
+                shark_cells.append(cell)
+            
+        return empty_cells, fish_cells, shark_cells
 
-        occupied_cells = [cell for cell in adjacent_cells if self.grid[cell[0]][cell[1]] != self.style_sea]
-        #This function verifies if the neibouring cases are blocked
-        fish_cells = [cell for cell in adjacent_cells if self.grid[cell[0]][cell[1]] == self.style_fish]
-
-        return empty_cells, occupied_cells, fish_cells
+    def check_grid(self):
+        my_grid_empty_cells = []
+        for cell in self.grid:
+            print(cell)
+            if cell == self.style_sea:
+                my_grid_empty_cells.append(cell)
+        return my_grid_empty_cells
 
         
 if __name__ == "main":
     my_grid = Grid(20)
     my_grid.display()
+
+my_grid = Grid(20)
+my_grid.display()
+print(my_grid.check_grid())

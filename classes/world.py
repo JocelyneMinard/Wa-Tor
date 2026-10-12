@@ -9,20 +9,23 @@ import pprint
 class World:
     def __init__(self, my_grid, grid_size) -> None:
         self.population_init_fish = 5
-        self.population_init_shark = 1
+        self.population_init_shark = 0
         self.grid_size = grid_size
         self.fish_dict = {}
         self.shark_dict = {}
 
         for i in range(self.population_init_fish) :
-            x = random.randint(0, self.grid_size -1)
-            y = random.randint(0, self.grid_size -1)
-            my_grid.affect_entity(x,y, "fish")
+            my_grid_empty_cells = my_grid.check_grid()
+            
+            x = random.randint(0, my_grid_empty_cells -1)
+            y = random.randint(0, my_grid_empty_cells -1)
+            my_grid.affect_entity(x, y, "fish")
             self.fish_dict[i] = Fish(x,y)
 
         for i in range(self.population_init_shark) :
-            x = random.randint(0, self.grid_size -1)
-            y = random.randint(0, self.grid_size -1)
+            my_grid_empty_cells = my_grid.check_grid()
+            x = random.randint(0, my_grid_empty_cells -1)
+            y = random.randint(0, my_grid_empty_cells -1)
             my_grid.affect_entity(x,y, "shark")
             self.shark_dict[i] = Shark(x,y)
 
@@ -40,8 +43,9 @@ class World:
 
     # mouvement fish and shark
     def move_entities(self):
-        self.all_entities_copy = self.all_entities
-        for entity_id, entity_obj in self.all_entities_copy.items():
+        for entity_id, entity_obj in self.shark_dict.items():
+            self.move(entity_obj)
+        for entity_id, entity_obj in self.fish_dict.items():
             self.move(entity_obj)
         my_grid.display()
 
@@ -85,9 +89,15 @@ class World:
 
 my_grid = Grid(5)
 w = World(my_grid, 5)
+for keys,values in w.fish_dict.items():
+    print(keys)
+    print(values.__str__())
+for keys,values in w.shark_dict.items():
+        print(keys)
+        print(values.__str__())
 
 turn = 0
-while turn < 10:
+while turn < 0:
     #os.system('clear') 
     turn += 1
     print(f"--- Tour {turn} ---")
@@ -96,7 +106,5 @@ while turn < 10:
     for keys,values in w.fish_dict.items():
         print(keys)
         print(values.__str__())
-    for keys,values in w.shark_dict.items():
-            print(keys)
-            print(values.__str__())
+
     time.sleep(1)
