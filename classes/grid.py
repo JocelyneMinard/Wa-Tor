@@ -1,4 +1,4 @@
-# This file manages simlation grid
+# This file manages the simulation grid
 import random
 
 class Grid:
@@ -16,10 +16,10 @@ class Grid:
         for row in self.grid:
             print("".join(row))
 
-    def affect_entity(self,x, y, type):
-        if (type =="fish"):
+    def affect_entity(self, x, y, entity_type):
+        if entity_type == "fish":
             self.grid[y][x] = self.style_fish
-        elif(type == "shark"):
+        elif entity_type == "shark":
             self.grid[y][x] = self.style_shark
         else:
             self.grid[y][x] = self.style_sea
@@ -28,34 +28,36 @@ class Grid:
         return self.grid[y][x] 
     
     def check_cells(self, x, y):
-        # Verifying neighbouring cells
-        possible_cells = [
-            (-1,0),
-            (1,0),
-            (0,-1),
-            (0,1)
+        # 1. Liste des directions de déplacement (dx, dy)
+        possible_moves = [
+            (-1, 0),  # Gauche
+            (1, 0),   # Droite
+            (0, -1),  # Haut
+            (0, 1)    # Bas
         ]
-
-        adjacent_cells = []
-
-        for cells in possible_cells:
-            adjacent_cells.append(x+cells[0], y + cells[1])
 
         empty_cells = []
         fish_cells = []
         shark_cells = []
-        print(f"grid : {self.grid}")
-        print(f"{adjacent_cells}")
 
-        for y, row in enumerate(adjacent_cells):
-            for x, cell in enumerate(row):
-                if self.check_cell(x,y) == self.style_sea:
-                    empty_cells.append((x, y))
-                elif self.check_cell(x,y) == self.style_fish:
-                    fish_cells.append((x, y))
-                else:
-                    shark_cells.append((x, y))
-                
+        # 2. On parcourt chaque déplacement possible
+        for dx, dy in possible_moves:
+            # Calcul des coordonnées voisines avec wrapping
+            # Attention : Ton code utilise self.grid[y][x], donc nx correspond à l'axe X (largeur) et ny à l'axe Y (hauteur)
+            nx = (x + dx) % self.size
+            ny = (y + dy) % self.size
+            
+            # 3. Récupération du contenu de la case
+            cell_content = self.grid[ny][nx]
+            
+            # 4. Tri en stockant le déplacement relatif (dx, dy)
+            if cell_content == self.style_sea:
+                empty_cells.append((dx, dy))
+            elif cell_content == self.style_fish:
+                fish_cells.append((dx, dy))
+            elif cell_content == self.style_shark:
+                shark_cells.append((dx, dy))
+            
         return empty_cells, fish_cells, shark_cells
 
     def check_grid(self):
@@ -64,16 +66,17 @@ class Grid:
             for x, cell in enumerate(row):
                 if cell == self.style_sea:
                     my_grid_empty_cells.append((x, y))
-
         return my_grid_empty_cells
 
-        
-if __name__ == "main":
-    my_grid = Grid(20)
+
+# Zone de test
+if __name__ == "__main__":
+    my_grid = Grid(10)
+    my_grid.affect_entity(0, 0, "fish")
+    my_grid.affect_entity(1, 0, "shark")
     my_grid.display()
-my_grid = Grid(10)
-my_grid.affect_entity(0, 0, "fish")
-my_grid.affect_entity(0, 1, "fish")
-my_grid.display()
-print(f"check_cell {my_grid.check_cell(0,0)}")
-my_grid.check_cells(0,0)
+    
+    empty, fish, shark = my_grid.check_cells(0, 0)
+    print(f"Cases vides autour de (0,0) : {empty}")
+    print(f"Poissons autour de (0,0) : {fish}")
+    print(f"Requins autour de (0,0) : {shark}")
