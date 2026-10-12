@@ -8,24 +8,21 @@ import pprint
 
 class World:
     def __init__(self, my_grid, grid_size) -> None:
-        self.population_init_fish = 5
-        self.population_init_shark = 0
+        self.population_init_fish = 10
+        self.population_init_shark = 1
         self.grid_size = grid_size
         self.fish_dict = {}
         self.shark_dict = {}
 
         for i in range(self.population_init_fish) :
             my_grid_empty_cells = my_grid.check_grid()
-            
-            x = random.randint(0, my_grid_empty_cells -1)
-            y = random.randint(0, my_grid_empty_cells -1)
+            x, y = random.choice(my_grid_empty_cells)
             my_grid.affect_entity(x, y, "fish")
             self.fish_dict[i] = Fish(x,y)
 
         for i in range(self.population_init_shark) :
             my_grid_empty_cells = my_grid.check_grid()
-            x = random.randint(0, my_grid_empty_cells -1)
-            y = random.randint(0, my_grid_empty_cells -1)
+            x, y = random.choice(my_grid_empty_cells)
             my_grid.affect_entity(x,y, "shark")
             self.shark_dict[i] = Shark(x,y)
 
@@ -53,7 +50,8 @@ class World:
         x = entity.get_x()
         y = entity.get_y()
         type = entity.get_type()
-        empty_cells, occupied_cells, fish_cells  = my_grid.check_cells(x, y)
+        empty_cells, fish_cells, shark_cell  = my_grid.check_cells(x, y)
+        print(fish_cells)
         match type:
             case "fish":
                 if(empty_cells != ""):
@@ -64,6 +62,7 @@ class World:
                     dx = 0
                     dy = 0
             case "shark":
+                print(f"fishcell {fish_cells}")
                 if fish_cells:
                     dx, dy = random.choice(fish_cells)
                     # Calcul de la position du poisson à manger (avec wrapping)
@@ -77,7 +76,8 @@ class World:
                 elif empty_cells:
                     dx, dy = random.choice(empty_cells)
                 my_grid.affect_entity(x, y, "empty")
-        
+
+        print(f"dx : {dx},{dy}")
         # Updating positions with wrapping
         x = (x + dx) % self.grid_size
         y = (y + dy) % self.grid_size
@@ -89,22 +89,12 @@ class World:
 
 my_grid = Grid(5)
 w = World(my_grid, 5)
-for keys,values in w.fish_dict.items():
-    print(keys)
-    print(values.__str__())
-for keys,values in w.shark_dict.items():
-        print(keys)
-        print(values.__str__())
+
 
 turn = 0
-while turn < 0:
+while turn < 3:
     #os.system('clear') 
     turn += 1
     print(f"--- Tour {turn} ---")
     w.move_entities()
-    print(my_grid.grid)
-    for keys,values in w.fish_dict.items():
-        print(keys)
-        print(values.__str__())
-
     time.sleep(1)
