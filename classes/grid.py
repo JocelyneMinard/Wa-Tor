@@ -27,7 +27,7 @@ class Grid:
     def check_cell(self, x, y):
         return self.grid[y][x] 
     
-    def check_cells(self, x, y):
+    def check_possible_moves(self, x, y):
         # 1. Liste des directions de déplacement (dx, dy)
         possible_moves = [
             (-1, 0),  # Gauche
@@ -55,10 +55,10 @@ class Grid:
                 empty_cells.append((dx, dy))
             elif cell_content == self.style_fish:
                 fish_cells.append((dx, dy))
-            elif cell_content == self.style_shark:
-                shark_cells.append((dx, dy))
+            #elif cell_content == self.style_shark:
+                #shark_cells.append((dx, dy))
             
-        return empty_cells, fish_cells, shark_cells
+        return empty_cells, fish_cells
 
     def check_grid(self):
         my_grid_empty_cells = []
@@ -73,7 +73,7 @@ class Grid:
 if __name__ == "__main__":
     my_grid = Grid(10)
     my_grid.affect_entity(0, 0, "fish")
-    my_grid.affect_entity(1, 0, "shark")
+    my_grid.affect_entity(1, 0, "fish")
     my_grid.display()
     
     empty, fish, shark = my_grid.check_cells(0, 0)
