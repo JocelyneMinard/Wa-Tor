@@ -153,7 +153,10 @@ def launch_interface(grid_instance):
                 if hasattr(grid_instance, 'update') or hasattr(grid_instance, 'update_grid'):
                     getattr(grid_instance, 'update', getattr(grid_instance, 'update_grid', lambda: None))()
 
-                        # INTERFACE (PART 3 - PASSIVE GRID SCAN & RENDERING LOOP)
+                                                   
+                             # INTERFACE (PART 3 - PASSIVE GRID SCAN & RENDERING LOOP)
+                             
+                             
         if not paused:
             # 1. Surface vessel cosmetic spawn tracker
             if not boat_data["active"] and random.random() < 0.003:
