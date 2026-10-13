@@ -142,6 +142,7 @@ def launch_interface(grid_instance):
                 elif event.key == pygame.K_F11:
                     is_fullscreen = not is_fullscreen
                     screen = pygame.display.set_mode((0, 0), base_flags | pygame.FULLSCREEN) if is_fullscreen else pygame.display.set_mode((base_width, base_height), base_flags)
+                    
         # EXTERNAL SIMULATION TRIGGER (Synchronized with world.py data)
         if not paused:
             if tick_count >= logic_delay:
@@ -152,5 +153,12 @@ def launch_interface(grid_instance):
                 if hasattr(grid_instance, 'update') or hasattr(grid_instance, 'update_grid'):
                     getattr(grid_instance, 'update', getattr(grid_instance, 'update_grid', lambda: None))()
 
-
-
+                        # INTERFACE (PART 3 - PASSIVE GRID SCAN & RENDERING LOOP)
+        if not paused:
+            # 1. Surface vessel cosmetic spawn tracker
+            if not boat_data["active"] and random.random() < 0.003:
+                boat_data["active"] = True; boat_data["x"] = -60; boat_data["target_y"] = random.randint(0, grid_size - 1)
+                boat_data["y"] = boat_data["target_y"] * CELL_SIZE + (CELL_SIZE // 4); boat_data["emoji"] = random.choice(["🚢", "🛥️", "⛵"])
+            if boat_data["active"]:
+                boat_data["x"] += boat_data["speed"]
+                if boat_data["x"] > base_width + 60: boat_data["active"] = False
