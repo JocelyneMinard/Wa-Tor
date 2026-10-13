@@ -18,9 +18,9 @@ class Shark (Fish):
         return str(self.x) + ": " + str(self.y)
 
 #2 Reproduction time
-    def reproduce_shark(self) -> Optional["Shark"]:
-        if self.turn >= self.reproduction_time:
-            self.turn = 0
+    def reproduce_shark(self,world_turn):
+        if world_turn > 0 and world_turn % 12 == 0:
+            self.age = world_turn 
             return Shark()
         return None 
 
