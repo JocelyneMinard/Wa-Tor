@@ -142,3 +142,4 @@ def launch_interface(grid_instance):
                 elif event.key == pygame.K_F11:
                     is_fullscreen = not is_fullscreen
                     screen = pygame.display.set_mode((0, 0), base_flags | pygame.FULLSCREEN) if is_fullscreen else pygame.display.set_mode((base_width, base_height), base_flags)
+                    
