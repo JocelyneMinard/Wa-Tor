@@ -7,7 +7,7 @@ import os, time
 
 class World:
     def __init__(self, my_grid, grid_size) -> None:
-        self.population_init_fish = 30
+        self.population_init_fish = 1
         self.population_init_shark = 1
         self.my_grid = my_grid  
         self.grid_size = grid_size
