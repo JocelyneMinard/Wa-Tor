@@ -1,4 +1,4 @@
-# interface (Part 1 - Setup & Cinematic Intro)
+                                # INTERFACE (PART 1 - SETUP & CINEMATIC INTRO)
 import pygame
 import random
 import sys
@@ -85,7 +85,7 @@ def run_intro_animation(screen, virtual_surface, clock, base_width, base_height,
         pygame.display.flip()
         clock.tick(60)
 
-# interface (Part 2 - Launch & Loop listening to world grid data)
+                            # INTERFACE (PART 2 - LAUNCH & LOOP LISTENING TO WORLD GRID DATA)
 
 def launch_interface(grid_instance):
     """
@@ -142,4 +142,15 @@ def launch_interface(grid_instance):
                 elif event.key == pygame.K_F11:
                     is_fullscreen = not is_fullscreen
                     screen = pygame.display.set_mode((0, 0), base_flags | pygame.FULLSCREEN) if is_fullscreen else pygame.display.set_mode((base_width, base_height), base_flags)
-                    
+        # EXTERNAL SIMULATION TRIGGER (Synchronized with world data)
+        if not paused:
+            if tick_count >= logic_delay:
+                tick_count = 0
+                world_turn += 1
+                # Trigger the updates ONLY via your world logic file methods if available, 
+                # otherwise world.py loop handles its own pacing.
+                if hasattr(grid_instance, 'update') or hasattr(grid_instance, 'update_grid'):
+                    getattr(grid_instance, 'update', getattr(grid_instance, 'update_grid', lambda: None))()
+
+
+
