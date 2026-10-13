@@ -8,7 +8,7 @@ import math
 CELL_SIZE = 54  # Pixel width and height for an individual grid square
 DASHBOARD_HEIGHT = 180  # Reserved vertical space at the bottom for statistics
 
-# RBG LIGHT
+# --- RBG LIGHT ---
 COLOR_BG = (10, 15, 30)          # Abyssal Midnight Blue background
 COLOR_TEXT_MAIN = (241, 245, 249)# Off-white for sharp typography
 COLOR_TEXT_MUTED = (100, 116, 139)# Slate Grey-Blue for minor labels
