@@ -9,15 +9,15 @@ class World:
     def __init__(self, my_grid, grid_size) -> None:
         self.population_init_fish = 30
         self.population_init_shark = 1
-        self.my_grid = my_grid  # Stockage de la grille dans l'instance
+        self.my_grid = my_grid  
         self.grid_size = grid_size
         self.fish_dict = {}
         self.shark_dict = {}
+        self.turn = 0
         my_grid_empty_cells = my_grid.check_grid()
 
-        if self.population_init_fish >= self.grid_size:
-            self.population_init_fish = int(self.population_init_fish * 0.7)
-            print(self.population_init_fish)
+        if int(self.population_init_fish * 0.6) >= self.grid_size:
+            self.population_init_fish = int(self.population_init_fish * 0.6)
         for i in range(self.population_init_fish):
             if my_grid_empty_cells:
                 x, y = random.choice(my_grid_empty_cells)
@@ -26,6 +26,8 @@ class World:
                 self.fish_dict[i] = Fish(x, y)
 
         # Remplissage des Requins
+        if int(self.population_init_shark * 0.3) >= self.grid_size:
+            self.population_init_shark = int(self.population_init_shark * 0.3)
         for i in range(self.population_init_shark):
             if my_grid_empty_cells:
                 x, y = random.choice(my_grid_empty_cells)
@@ -40,7 +42,9 @@ class World:
         for entity_id, entity_obj in self.shark_dict.items():
             self.move(entity_obj)
         for entity_id, entity_obj in self.fish_dict.items():
-            self.move(entity_obj)
+            if entity_id in self.fish_dict:
+                # check if fish exist , he cqn be eat by shark before
+                self.move(entity_obj)
         my_grid.display()
 
     def move(self, entity):
@@ -48,16 +52,16 @@ class World:
         y = entity.get_y()
         type = entity.get_type()
         empty_cells, fish_cells  = my_grid.check_possible_moves(x, y)
+        moved = False
+        dx = 0
+        dy = 0
 
         match type:
             case "fish":
                 if(empty_cells):
                     dx, dy = random.choice(empty_cells)
                     my_grid.affect_entity(x, y, "empty")
-                else: 
-                    #fish without empty cells around
-                    dx = 0
-                    dy = 0
+                    moved = True
             case "shark":
                 if fish_cells:
                     dx, dy = random.choice(fish_cells)
@@ -69,20 +73,20 @@ class World:
                         if fobj.get_x() == target_x and fobj.get_y() == target_y:
                             Fish.remove_fish(self, self.fish_dict, fid)
                             break
+                        moved = True
                 elif(empty_cells):
                     dx, dy = random.choice(empty_cells)
-                else:
-                    dy = 0
-                    dx = 0
-                my_grid.affect_entity(x, y, "empty")
-
-        # Updating positions with wrapping
-        x = (x + dx) % self.grid_size
-        y = (y + dy) % self.grid_size
-        entity.x = x
-        entity.y = y
-        my_grid.affect_entity(x, y, type)
-        return(x, y)
+                    moved = True
+                
+        if (moved == True ):     
+            my_grid.affect_entity(x, y, "empty")
+            # Updating positions with wrapping
+            x = (x + dx) % self.grid_size
+            y = (y + dy) % self.grid_size
+            entity.x = x    #update  in dictonary the entity position
+            entity.y = y
+            my_grid.affect_entity(x, y, type)
+            return(x, y)
         
 
 grid_size = 5
@@ -90,10 +94,10 @@ my_grid = Grid(grid_size)
 w = World(my_grid, grid_size)
 
 
-turn = 0
-while turn < 10:
+
+while w.turn < 10:
     #os.system('clear') 
-    turn += 1
-    print(f"--- Tour {turn} ---")
+    w.turn += 1
+    print(f"--- Tour {w.turn} ---")
     w.move_entities()
     time.sleep(1)
