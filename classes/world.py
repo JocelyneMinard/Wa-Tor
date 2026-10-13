@@ -39,12 +39,15 @@ class World:
 
     # mouvement fish and shark
     def move_entities(self):
-        for entity_id, entity_obj in self.shark_dict.items():
-            self.move(entity_obj)
-        for entity_id, entity_obj in self.fish_dict.items():
-            if entity_id in self.fish_dict:
-                # check if fish exist , he cqn be eat by shark before
-                self.move(entity_obj)
+        # fix list of dict shark
+        for entity_id in list(self.shark_dict.keys()):
+            if entity_id in self.shark_dict:
+                self.move(self.shark_dict[entity_id])
+                
+        # fix list of dict fish
+        for entity_id in list(self.fish_dict.keys()):
+             if entity_id in self.fish_dict:
+                self.move(self.fish_dict[entity_id])
         my_grid.display()
 
     def move(self, entity):
@@ -60,26 +63,34 @@ class World:
             case "fish":
                 if(empty_cells):
                     dx, dy = random.choice(empty_cells)
-                    my_grid.affect_entity(x, y, "empty")
+                    can_reproduce_fish = Fish.reproduce(entity, self.turn) 
+                    if can_reproduce_fish :  
+                        new_id = max(self.fish_dict.keys(), default=-1) + 1
+                        self.fish_dict[new_id] = Fish(x, y)
+                    else:
+                        my_grid.affect_entity(x, y, "empty")
                     moved = True
             case "shark":
-                if fish_cells:
+                if fish_cells:                    
                     dx, dy = random.choice(fish_cells)
                     # Calcul de la position du poisson à manger (avec wrapping)
                     target_x = (x + dx) % self.grid_size
                     target_y = (y + dy) % self.grid_size
-                     # Trouver et supprimer le poisson du dictionnaire
-                    for fid, fobj in list(self.fish_dict.items()):
-                        if fobj.get_x() == target_x and fobj.get_y() == target_y:
-                            Fish.remove_fish(self, self.fish_dict, fid)
-                            break
-                        moved = True
+                    # Trouver et supprimer le poisson du dictionnaire
+                    Shark.eat_fish(entity, target_x, target_y, self.fish_dict.items(),  self.fish_dict)
+                    moved = True
+                    my_grid.affect_entity(x, y, "empty")
                 elif(empty_cells):
                     dx, dy = random.choice(empty_cells)
+                    shark_can_reproduce = Shark.reproduce(entity, self.turn)
+                    if shark_can_reproduce :
+                        new_id = max(self.shark_dict.keys(), default=-1) + 1
+                        self.shark_dict[new_id] = Shark(x, y) 
+                    else:
+                        my_grid.affect_entity(x, y, "empty")
                     moved = True
                 
-        if (moved == True ):     
-            my_grid.affect_entity(x, y, "empty")
+        if (moved == True ):
             # Updating positions with wrapping
             x = (x + dx) % self.grid_size
             y = (y + dy) % self.grid_size
@@ -89,15 +100,15 @@ class World:
             return(x, y)
         
 
-grid_size = 5
+grid_size = 10
 my_grid = Grid(grid_size)
 w = World(my_grid, grid_size)
 
 
 
-while w.turn < 10:
+while w.turn < 30:
     #os.system('clear') 
     w.turn += 1
     print(f"--- Tour {w.turn} ---")
     w.move_entities()
-    time.sleep(1)
+    time.sleep(0.5)
