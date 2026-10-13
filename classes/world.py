@@ -1,14 +1,13 @@
 # This class manages the simulation
-from grid import Grid 
-from fish import Fish
-from shark import Shark
+
+from classes.fish import Fish
+from classes.shark import Shark
 import random
-import os, time
 
 class World:
     def __init__(self, my_grid, grid_size) -> None:
-        self.population_init_fish = 1
-        self.population_init_shark = 1
+        self.population_init_fish = 20
+        self.population_init_shark = 3
         self.my_grid = my_grid  
         self.grid_size = grid_size
         self.fish_dict = {}
@@ -48,13 +47,13 @@ class World:
         for entity_id in list(self.fish_dict.keys()):
              if entity_id in self.fish_dict:
                 self.move(self.fish_dict[entity_id])
-        my_grid.display()
+        self.my_grid.display()
 
     def move(self, entity):
         x = entity.get_x()
         y = entity.get_y()
         type = entity.get_type()
-        empty_cells, fish_cells  = my_grid.check_possible_moves(x, y)
+        empty_cells, fish_cells  = self.my_grid.check_possible_moves(x, y)
         moved = False
         dx = 0
         dy = 0
@@ -68,7 +67,7 @@ class World:
                         new_id = max(self.fish_dict.keys(), default=-1) + 1
                         self.fish_dict[new_id] = Fish(x, y)
                     else:
-                        my_grid.affect_entity(x, y, "empty")
+                        self.my_grid.affect_entity(x, y, "empty")
                     moved = True
             case "shark":
                 if fish_cells:                    
@@ -79,7 +78,7 @@ class World:
                     # Trouver et supprimer le poisson du dictionnaire
                     Shark.eat_fish(entity, target_x, target_y, self.fish_dict.items(),  self.fish_dict)
                     moved = True
-                    my_grid.affect_entity(x, y, "empty")
+                    self.my_grid.affect_entity(x, y, "empty")
                 elif(empty_cells):
                     dx, dy = random.choice(empty_cells)
                     shark_can_reproduce = Shark.reproduce(entity, self.turn)
@@ -87,7 +86,7 @@ class World:
                         new_id = max(self.shark_dict.keys(), default=-1) + 1
                         self.shark_dict[new_id] = Shark(x, y) 
                     else:
-                        my_grid.affect_entity(x, y, "empty")
+                        self.my_grid.affect_entity(x, y, "empty")
                     moved = True
                 
         if (moved == True ):
@@ -96,19 +95,6 @@ class World:
             y = (y + dy) % self.grid_size
             entity.x = x    #update  in dictonary the entity position
             entity.y = y
-            my_grid.affect_entity(x, y, type)
+            self.my_grid.affect_entity(x, y, type)
             return(x, y)
         
-
-grid_size = 10
-my_grid = Grid(grid_size)
-w = World(my_grid, grid_size)
-
-
-
-while w.turn < 30:
-    #os.system('clear') 
-    w.turn += 1
-    print(f"--- Tour {w.turn} ---")
-    w.move_entities()
-    time.sleep(0.5)

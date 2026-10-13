@@ -16,8 +16,7 @@ class Fish:
         self.x = x
         self.y = y
 
-
-          # reproduce method to move the fish and leave a baby behind at the old position
+    # reproduce method to move the fish and leave a baby behind at the old position
     def reproduce(self, world_turn: int): 
         # Check if the current world turn is a multiple of 8
         if world_turn > 0 and world_turn % self.reproduction_time == 0:

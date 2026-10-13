@@ -5,8 +5,8 @@ class Grid:
     def __init__(self, size: int) -> None:
         self.size = size
         self.style_sea = "\033[96m██\033[0m"
-        self.style_fish = "\033[96m🐟\033[0m"
-        self.style_shark = "\033[96m🦈\033[0m"
+        self.style_fish = "\033[96m\033[106m🐟\033[0m"
+        self.style_shark = "\033[96m\033[106m🦈\033[0m"
         self.init_grid()
 
     def init_grid(self):

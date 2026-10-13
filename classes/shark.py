@@ -1,8 +1,7 @@
 """This is the dedicated file to the Shark Class.
 This file inherits from Fish class"""
 
-import random
-from fish import Fish
+from classes.fish import Fish
 
 #1 Inherits from Fish class
 class Shark (Fish):
