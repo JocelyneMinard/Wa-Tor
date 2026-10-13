@@ -8,7 +8,7 @@ import math
 CELL_SIZE = 54  # Pixel width and height for an individual grid square
 DASHBOARD_HEIGHT = 180  # Reserved vertical space at the bottom for statistics
 
-# Premium Cyber-Oceanic HUD Color Palette (RGB Format)
+# RBG LIGHT
 COLOR_BG = (10, 15, 30)          # Abyssal Midnight Blue background
 COLOR_TEXT_MAIN = (241, 245, 249)# Off-white for sharp typography
 COLOR_TEXT_MUTED = (100, 116, 139)# Slate Grey-Blue for minor labels
@@ -142,7 +142,7 @@ def launch_interface(grid_instance):
                 elif event.key == pygame.K_F11:
                     is_fullscreen = not is_fullscreen
                     screen = pygame.display.set_mode((0, 0), base_flags | pygame.FULLSCREEN) if is_fullscreen else pygame.display.set_mode((base_width, base_height), base_flags)
-        # EXTERNAL SIMULATION TRIGGER (Synchronized with world data)
+        # EXTERNAL SIMULATION TRIGGER (Synchronized with world.py data)
         if not paused:
             if tick_count >= logic_delay:
                 tick_count = 0
