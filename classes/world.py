@@ -80,6 +80,7 @@ class World:
                         Shark.eat_fish(entity, target_x, target_y, self.fish_dict.items(),  self.fish_dict)
                         moved = True
                         self.my_grid.affect_entity(x, y, "empty")
+                        Shark.decrease_stamina(entity)
                     elif(empty_cells):
                         dx, dy = random.choice(empty_cells)
                         shark_can_reproduce = Shark.reproduce(entity, self.turn)
@@ -90,6 +91,8 @@ class World:
                             self.my_grid.affect_entity(x, y, "empty")
                         Shark.decrease_stamina(entity)
                         moved = True
+                    else:
+                        Shark.decrease_stamina(entity)
                 else:
                     for shark_id, shark_obj in list(self.shark_dict.items()):
                         if shark_obj == entity:  # Plus simple et plus sûr que de comparer x et y
