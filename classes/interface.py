@@ -32,5 +32,22 @@ GREEN_NEON = (34, 197, 94)
 PANEL_BG = (20, 30, 55)
 PANEL_BORDER = (40, 60, 95)
 
+def get_average_shark_stamina(grid_instance) -> float:
+    """Scans the grid externally to compute the average stamina level of all active sharks."""
+    total_stamina = 0
+    shark_count = 0
+    for row in grid_instance.grid:
+        for cell in row:
+            if cell.__class__.__name__ == "Shark" or (hasattr(cell, "get_type") and cell.get_type() == "shark"):
+                # Updated lookup to point directly to the local 'stamina' class attribute
+                stamina = getattr(cell, 'stamina', 0)
+                total_stamina += stamina
+                shark_count += 1
+    return round(total_stamina / shark_count, 1) if shark_count > 0 else 0.0
 
+def run_intro_animation(screen, virtual_surface, clock, base_flags):
+    """Animates a cinematic underwater diving sequence before initializing the main engine."""
+    intro_running = True
+    start_time = pygame.time.get_ticks()
+    duration = 2500  # Animation frame life-span clock tracker (2.5 seconds)
 
