@@ -2,7 +2,7 @@ from classes.grid import Grid
 from classes.world import World 
 import os, time
 
-grid_size = 30
+grid_size = 10
 my_grid = Grid(grid_size)
 w = World(my_grid, grid_size)
 
