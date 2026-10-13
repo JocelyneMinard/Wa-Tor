@@ -50,4 +50,8 @@ def run_intro_animation(screen, virtual_surface, clock, base_flags):
     intro_running = True
     start_time = pygame.time.get_ticks()
     duration = 2500  # Animation frame life-span clock tracker (2.5 seconds)
+    
+bubbles = [{"x": random.randint(0, BASE_WIDTH), "y": random.randint(BASE_HEIGHT, BASE_HEIGHT + 200), "speed": random.uniform(4, 9), "radius": random.randint(2, 5)} for _ in range(60)]
+font_intro = pygame.font.SysFont("Segoe UI", 20, bold=True)
+font_sub = pygame.font.SysFont("Consolas", 12)
 
