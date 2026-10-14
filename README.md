@@ -132,7 +132,7 @@ Wa-Tor was devised by A. K. Dewdney and presented in *Scientific American* in 19
 ## 👥 Team
 
 | Person | Contribution |
-|---|---|
+|---|---| We all worked together; everyone was responsible for their own file, though sometimes assisted by the others.
 | **Matisse Guerguet** | Graphical interface (`interface.py`), fish (`fish.py`), helped on `world.py` and `grid.py` |
 | **Jocelyne** | `world.py` and `grid.py` |
 | **Romain** | Sharks (`shark.py`), helped on `world.py` and `grid.py` |
@@ -270,9 +270,10 @@ Wa-Tor a été imaginé par A. K. Dewdney et présenté dans *Scientific America
 ## 👥 Équipe
 
 | Personne | Contribution |
-|---|---|
+|---|nous avont tous travaillé ensemble, chacun était responsable de son fichier, mais parfois aider par les autres 
 | **Matisse Guerguet** | Interface graphique (`interface.py`), poissons (`fish.py`), aide sur `world.py` et `grid.py` |
 | **Jocelyne** | `world.py` et `grid.py` |
 | **Romain** | Requins (`shark.py`), aide sur `world.py` et `grid.py` |
+
 
 <sub>[⬆ Retour en haut / Back to top](#top) · [🇬🇧 English version](#english)</sub>
