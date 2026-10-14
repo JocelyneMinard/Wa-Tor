@@ -109,7 +109,7 @@ class Grid:
         if fish_cells:
             nx, ny = random.choice(fish_cells)
             self.removed.append(self.grid[ny][nx])
-            shark.energy = min(shark.energy + 5, 12)
+            shark.energy = min(shark.energy + 7, 16)
             shark.x, shark.y = nx, ny
             self.affect_entity(nx, ny, shark)
             self.affect_entity(x, y, None)
@@ -127,7 +127,7 @@ class Grid:
 # --- MAIN ENGINE CONTROL LOOP ---
 
 TARGET_FPS = 60
-START_FULLSCREEN = True  # False = start in a normal window
+START_FULLSCREEN = False  # False = start in a normal window
 EMOJI_RATIO = 0.6  # emoji size relative to a cell (0.6 = 60%)
 WAVE_LEVELS = range(-15, 16)  # integer wave amplitudes -> cached sea tiles
 
