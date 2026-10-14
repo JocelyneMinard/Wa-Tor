@@ -11,4 +11,7 @@ while True:
     os.system('clear') 
     w.turn += 1
     w.move_entities()
+    print(f"--------------Turn : {w.turn}--------------")
+    print(f"Fish number : {len(w.fish_dict)}")
+    print(f"Shark number : {len(w.shark_dict)}")
     time.sleep(0.7)

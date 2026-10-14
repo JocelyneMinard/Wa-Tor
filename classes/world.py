@@ -7,7 +7,7 @@ import random
 class World:
     def __init__(self, my_grid, grid_size) -> None:
         self.population_init_fish = 5
-        self.population_init_shark = 1
+        self.population_init_shark = 2
         self.my_grid = my_grid  
         self.grid_size = grid_size
         self.fish_dict = {}
