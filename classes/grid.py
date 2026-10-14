@@ -43,27 +43,22 @@ class Grid:
         # 2. On parcourt chaque déplacement possible
         for dx, dy in possible_moves:
             # Calcul des coordonnées voisines avec wrapping
-            # Attention : Ton code utilise self.grid[y][x], donc nx correspond à l'axe X (largeur) et ny à l'axe Y (hauteur)
             nx = (x + dx) % self.size
             ny = (y + dy) % self.size
             
-            # 3. Récupération du contenu de la case
+            # Récupération du contenu de la case
             cell_content = self.grid[ny][nx]
             
-            # 4. Tri en stockant le déplacement relatif (dx, dy)
+            # Tri en stockant le déplacement relatif (dx, dy)
             if cell_content == self.style_sea:
                 empty_cells.append((dx, dy))
             elif cell_content == self.style_fish:
                 fish_cells.append((dx, dy))
-            #elif cell_content == self.style_shark:
-                #shark_cells.append((dx, dy))
+        
             
         return empty_cells, fish_cells
 
     def check_grid(self):
-        # Conserver uniquement le print principal si nécessaire pour le debug
-        print("Vérification de la grille et recherche des cases vides.")
-        
         # Compréhension de liste imbriquée pour extraire les coordonnées (x, y)
         my_grid_empty_cells = [
             (x, y) 
@@ -72,7 +67,6 @@ class Grid:
             if cell == self.style_sea
         ]
 
-        print(my_grid_empty_cells)
         return my_grid_empty_cells
 
 

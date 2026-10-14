@@ -15,14 +15,23 @@ class Shark (Fish):
     def __str__(self):
         return str(self.x) + ": " + str(self.y)
 
+    # Return shark's position on the grid   
+    def get_x(self):
+        return self.x
+    
+    def get_y(self):
+        return self.y
 
+    # Return shark's type   
+    def get_type(self):
+        return "shark"
+    
     def eat_fish(self, target_x, target_y, item, fish_dict):
         for fid, fobj in list(item):
             if fobj.get_x() == target_x and fobj.get_y() == target_y:
                 Fish.remove_fish(self, fish_dict, fid)
                 break
         self.increase_stamina()
-
     
     def get_stamina(self) :
         #replenish stamina
@@ -32,27 +41,12 @@ class Shark (Fish):
         #replenish stamina
         self.stamina += 7
 
-    #3 Decreases stamina
+    # Decreases stamina
     def decrease_stamina(self):
         self.stamina -= 1       
 
-    #4 Dying shark
+    # Dying shark
     def remove_shark(self, shark_dict: dict, shark_id) -> None:
         """Removes shark when dying """
         if shark_id in shark_dict:
             del shark_dict[shark_id]
-
-    #6 Return shark's death
-    def shark_starvation_time(self, turn, shark):
-        if turn >= self.time_remaining:
-            return False
-            
-    #7 Return shark's position on the grid   
-    def get_x(self):
-        return self.x
-    def get_y(self):
-        return self.y
-
-    #8 Return shark's type   
-    def get_type(self):
-        return "shark"
