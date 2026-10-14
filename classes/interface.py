@@ -1,167 +1,283 @@
-                                # INTERFACE (PART 1 - SETUP & CINEMATIC INTRO)
+# interface.py (Part 1 - Initialization & Internal Core Classes)
 import pygame
 import random
 import sys
 import math
 
-# --- GRAPHICAL STYLE & WINDOW CONFIGURATION ---
-CELL_SIZE = 54  # Pixel width and height for an individual grid square
-DASHBOARD_HEIGHT = 180  # Reserved vertical space at the bottom for statistics
+# --- GRAPHICAL SCREEN CONFIGURATION ---
+CELL_SIZE = 50  
+GRID_SIZE = 15  
+GAME_SIZE = GRID_SIZE * CELL_SIZE
+DASHBOARD_HEIGHT = 160  
+WINDOW_WIDTH = GAME_SIZE
+WINDOW_HEIGHT = GAME_SIZE + DASHBOARD_HEIGHT
 
-# --- RBG LIGHT ---
-COLOR_BG = (10, 15, 30)          # Abyssal Midnight Blue background
-COLOR_TEXT_MAIN = (241, 245, 249)# Off-white for sharp typography
-COLOR_TEXT_MUTED = (100, 116, 139)# Slate Grey-Blue for minor labels
-COLOR_PAUSE_VEIL = (8, 12, 24, 210) # Transparent overlay dark coat
+# Modern Cinematic Interface Palette (UI Slate & Cyan)
+COLOR_BG = (15, 23, 42)         
+COLOR_TEXT = (241, 245, 249)    
+COLOR_PAUSE_VEIL = (15, 23, 42, 180) 
+COLOR_PANEL = (30, 41, 59)
+COLOR_BORDER = (71, 85, 105)
 
-CYAN_NEON = (6, 182, 212)
-GOLD_NEON = (234, 179, 8)
-RED_NEON = (239, 68, 68)
-PURPLE_NEON = (139, 92, 246)
-GREEN_NEON = (34, 197, 94)
-PANEL_BG = (20, 30, 55)
-PANEL_BORDER = (40, 60, 95)
+# --- INTERNAL STANDALONE LOGIC CLASSES ---
 
-def get_average_shark_stamina(grid_instance) -> float:
-    """Scans the external grid to compute the average stamina level of active sharks."""
-    total_stamina = 0
-    shark_count = 0
-    for row in grid_instance.grid:
-        for cell in row:
-            if cell is not None and (cell.__class__.__name__ == "Shark" or (hasattr(cell, "get_type") and cell.get_type() == "shark")):
-                stamina = getattr(cell, 'stamina', 0)
-                total_stamina += stamina
-                shark_count += 1
-    return round(total_stamina / shark_count, 1) if shark_count > 0 else 0.0
+class Fish:
+    def __init__(self, x: int, y: int) -> None:
+        self.x = x
+        self.y = y
 
-def run_intro_animation(screen, virtual_surface, clock, base_width, base_height, game_size):
-    """Animates a cinematic underwater diving sequence before initializing the main engine."""
-    intro_running = True
-    start_time = pygame.time.get_ticks()
-    duration = 2500  # Animation frame life-span clock tracker (2.5 seconds)
+    def reproduce(self, nx: int, ny: int, world_turn: int):
+        old_x, old_y = self.x, self.y
+        self.x, self.y = nx, ny
+        if world_turn > 0 and world_turn % 8 == 0:
+            return Fish(old_x, old_y)
+        return None
+
+class Shark:
+    def __init__(self, x: int, y: int) -> None:
+        self.x = x
+        self.y = y
+        self.energy = 8  
+
+    def reproduce(self, nx: int, ny: int, world_turn: int):
+        old_x, old_y = self.x, self.y
+        self.x, self.y = nx, ny
+        if world_turn > 0 and world_turn % 12 == 0:
+            return Shark(old_x, old_y)
+        return None
+
+class Grid:
+    def __init__(self, size: int) -> None:
+        self.size = size
+        self.grid = [[None for _ in range(self.size)] for _ in range(self.size)]
+
+    def affect_entity(self, x, y, entity):
+        self.grid[y][x] = entity
+
+    def check_cell(self, x, y):
+        return self.grid[y][x] 
     
-    bubbles = [{"x": random.randint(0, base_width), "y": random.randint(base_height, base_height + 200), "speed": random.uniform(4, 9), "radius": random.randint(2, 5)} for _ in range(60)]
-    font_intro = pygame.font.SysFont("Segoe UI", 20, bold=True)
-    font_sub = pygame.font.SysFont("Consolas", 12)
+    def check_cells(self, x, y):
+        possible_moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        adjacent_cells = []
+        for dx, dy in possible_moves:
+            nx = (x + dx) % self.size
+            ny = (y + dy) % self.size
+            adjacent_cells.append((nx, ny))
 
-    while intro_running:
-        elapsed = pygame.time.get_ticks() - start_time
-        progress = min(1.0, elapsed / duration)
-        if progress >= 1.0: intro_running = False
+        empty_cells = []
+        fish_cells = []
+        for cx, cy in adjacent_cells:
+            content = self.check_cell(cx, cy)
+            if content is None:
+                empty_cells.append((cx, cy))
+            elif isinstance(content, Fish):
+                fish_cells.append((cx, cy))
+        return empty_cells, fish_cells
+# interface.py (Part 2 - Simulation Launcher & Movement Processing Loops)
+    def turn_fish(self, x, y, world_turn: int):
+        fish = self.grid[y][x]
+        if fish is None: return
+        empty_cells, _ = self.check_cells(x, y)
+        if empty_cells:
+            nx, ny = random.choice(empty_cells)
+            baby = fish.reproduce(nx, ny, world_turn)
+            self.affect_entity(nx, ny, fish)
+            self.affect_entity(x, y, baby)
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT: pygame.quit(); sys.exit()
+    def turn_shark(self, x, y, world_turn: int):
+        shark = self.grid[y][x]
+        if shark is None:
+            return
 
-        virtual_surface.fill((10, 15, 30))
-        current_g = int(180 - (progress * 140))
-        current_b = int(240 - (progress * 140))
-        water_layer = pygame.Surface((base_width, base_height))
-        water_layer.fill((10, current_g, current_b))
-        virtual_surface.blit(water_layer, (0, 0))
+        shark.energy -= 1
+        if shark.energy <= 0:
+            self.affect_entity(x, y, None)
+            return
 
-        for b in bubbles:
-            b["y"] -= b["speed"]
-            wave_x = b["x"] + math.sin(b["y"] * 0.05) * 5
-            pygame.draw.circle(virtual_surface, (255, 255, 255, 160), (int(wave_x), int(b["y"])), b["radius"])
-            if b["y"] < -20:
-                b["y"] = base_height + random.randint(0, 50)
-                b["x"] = random.randint(0, base_width)
+        fish_cells, empty_cells = self.check_cells(x, y)
 
-        text_alpha = max(0, min(255, int(progress * 255) if progress < 0.8 else int((1.0 - progress) * 5 * 255)))
-        title_surf = font_intro.render("INITIALIZING WA-TOR CORE", True, CYAN_NEON)
-        sub_surf = font_sub.render(f"READING EXTERNAL MATRIX DATA... {int(progress*100)}%", True, COLOR_TEXT_MAIN)
-        title_surf.set_alpha(text_alpha)
-        sub_surf.set_alpha(text_alpha)
-        
-        virtual_surface.blit(title_surf, title_surf.get_rect(center=(base_width // 2, base_height // 2 - 20)))
-        virtual_surface.blit(sub_surf, sub_surf.get_rect(center=(base_width // 2, base_height // 2 + 15)))
+        if fish_cells:
+            nx, ny = random.choice(fish_cells)
+            shark.energy = min(shark.energy + 5, 12)
+            self.affect_entity(nx, ny, shark)
+            self.affect_entity(x, y, None)
+            if world_turn > 0 and world_turn % 12 == 0:
+                baby = Shark(x, y)
+                self.affect_entity(x, y, baby)
+            return
 
-        screen.fill((0, 0, 0))
-        screen_w, screen_height = screen.get_size()
-        scale_factor = min(screen_w / base_width, screen_height / base_height)
-        new_w, new_h = int(base_width * scale_factor), int(base_height * scale_factor)
-        scaled_surf = pygame.transform.smoothscale(virtual_surface, (new_w, new_h))
-        screen.blit(scaled_surf, ((screen_w - new_w) // 2, (screen_height - new_h) // 2))
-        pygame.display.flip()
-        clock.tick(60)
+        if empty_cells:
+            nx, ny = random.choice(empty_cells)
+            baby = shark.reproduce(nx, ny, world_turn)
+            self.affect_entity(nx, ny, shark)
+            self.affect_entity(x, y, baby)
 
-                            # INTERFACE (PART 2 - LAUNCH & LOOP LISTENING TO WORLD GRID DATA)
+# --- MAIN ENGINE CONTROL LOOP ---
 
-def launch_interface(grid_instance):
-    """
-    Main graphical loop receiving the fully populated grid directly from world.py.
-    No local population spawning or entity update methods are managed here.
-    """
+def main():
     pygame.init()
     
-    # Read grid dimensions natively from the instance provided by world
-    grid_size = grid_instance.size
-    game_size = grid_size * CELL_SIZE
-    base_width = game_size
-    base_height = game_size + DASHBOARD_HEIGHT
-    
-    base_flags = pygame.HWSURFACE | pygame.DOUBLEBUF
-    screen = pygame.display.set_mode((base_width, base_height), base_flags) 
-    pygame.display.set_caption("Wa-Tor Oceanic Command Core v3.0 🌌")
+    # Double buffer mode and hardware acceleration flags
+    flags = pygame.HWSURFACE | pygame.DOUBLEBUF
+    screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), flags) 
+    pygame.display.set_caption("Wa-Tor Standalone Ecosystem & Dashboard 📊")
     clock = pygame.time.Clock()
     
-    virtual_surface = pygame.Surface((base_width, base_height))
-    is_fullscreen = False
-    
-    # Launch intro animation using the real sizes
-    run_intro_animation(screen, virtual_surface, clock, base_width, base_height, game_size)
+    # Vector font assets initialization
+    font_bold = pygame.font.SysFont("Segoe UI", 14, bold=True)
+    font_value = pygame.font.SysFont("Consolas", 14, bold=False)
+    font_energy = pygame.font.SysFont("Consolas", 11, bold=True)
+    font_emoji = pygame.font.SysFont(["segoe ui emoji", "apple color emoji", "noto color emoji", "Arial"], int(CELL_SIZE * 0.65))
 
-    font_title = pygame.font.SysFont("Segoe UI", 12, bold=True)
-    font_value = pygame.font.SysFont("Consolas", 15, bold=True)
-    font_pause = pygame.font.SysFont("Segoe UI", 26, bold=True)
-    font_emoji = pygame.font.SysFont(["segoe ui emoji", "apple color emoji", "noto color emoji"], int(CELL_SIZE * 0.65))
-
-    world_turn, tick_count, logic_delay = 0, 0, 14
+    # Grid mapping module deployment
+    grid_instance = Grid(GRID_SIZE)
+    world_turn = 0
     paused = False
     
-    wave_map = [[random.uniform(0, 50) for _ in range(grid_size)] for _ in range(grid_size)]
-    particles = [{"x": random.randint(0, base_width), "y": random.randint(0, game_size), "speed": random.uniform(0.2, 0.8), "radius": random.randint(1, 3)} for _ in range(40)]
-    
-    # Cosmetic environment assets completely disconnected from simulation code
-    boat_data = {"active": False, "x": 0, "y": 0, "speed": 1.5, "emoji": "🚢", "target_y": 0}
-    rain_ripples = []
-    jellyfish_glow = {"active": False, "time": 0.0, "alpha": 0, "pulse_speed": 0.04}
+    tick_count = 0
+    logic_delay = 14  # Refresh gap intervals between computation calculations
+    wave_grid = [[random.uniform(0, 100) for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
+
+    # Dynamic random allocations (45 Fish models / 18 Shark trackers)
+    for _ in range(45):
+        rx, ry = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
+        if grid_instance.check_cell(rx, ry) is None: 
+            grid_instance.affect_entity(rx, ry, Fish(rx, ry))
+
+    for _ in range(18):
+        rx, ry = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
+        if grid_instance.check_cell(rx, ry) is None: 
+            grid_instance.affect_entity(rx, ry, Shark(rx, ry))
 
     running = True
     while running:
         current_fps = int(clock.get_fps())
-        time_ms = pygame.time.get_ticks()
         tick_count += 1
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT: running = False
+            if event.type == pygame.QUIT:
+                running = False
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE: paused = not paused
-                elif event.key == pygame.K_UP: logic_delay = max(2, logic_delay - 2)
-                elif event.key == pygame.K_DOWN: logic_delay = min(50, logic_delay + 2)
-                elif event.key == pygame.K_F11:
-                    is_fullscreen = not is_fullscreen
-                    screen = pygame.display.set_mode((0, 0), base_flags | pygame.FULLSCREEN) if is_fullscreen else pygame.display.set_mode((base_width, base_height), base_flags)
-                    
-        # EXTERNAL SIMULATION TRIGGER (Synchronized with world.py data)
+                if event.key == pygame.K_SPACE:
+                    paused = not paused
+                elif event.key == pygame.K_UP:    # Speeds up current timeline updates pace
+                    logic_delay = max(1, logic_delay - 2)
+                elif event.key == pygame.K_DOWN:  # Extends step update intervals pace
+                    logic_delay = min(60, logic_delay + 2)
+
+        # ENGINE TICK EXECUTION PROCESS SEQUENCE
         if not paused:
             if tick_count >= logic_delay:
                 tick_count = 0
                 world_turn += 1
-                # Trigger the updates ONLY via your world logic file methods if available, 
-                # otherwise world.py loop handles its own pacing.
-                if hasattr(grid_instance, 'update') or hasattr(grid_instance, 'update_grid'):
-                    getattr(grid_instance, 'update', getattr(grid_instance, 'update_grid', lambda: None))()
+                
+                fishes_to_update = []
+                sharks_to_update = []
+                for y in range(GRID_SIZE):
+                    for x in range(GRID_SIZE):
+                        cell = grid_instance.grid[y][x]
+                        if isinstance(cell, Fish): fishes_to_update.append((x, y))
+                        elif isinstance(cell, Shark): sharks_to_update.append((x, y))
+                            
+                for sx, sy in sharks_to_update:
+                    if isinstance(grid_instance.grid[sy][sx], Shark): 
+                        grid_instance.turn_shark(sx, sy, world_turn)
+                for fx, fy in fishes_to_update:
+                    if isinstance(grid_instance.grid[fy][fx], Fish): 
+                        grid_instance.turn_fish(fx, fy, world_turn)
+# interface.py (Part 3 - Liquid Vector Canvas Blit & Dashboard HUD telemetry)
+        # Computing metric counts on-the-fly
+        count_fish, count_shark = 0, 0
+        for row in grid_instance.grid:
+            for cell in row:
+                if isinstance(cell, Fish): count_fish += 1
+                elif isinstance(cell, Shark): count_shark += 1
+        
+        total_cells = GRID_SIZE * GRID_SIZE
+        fish_percent = (count_fish / total_cells) * 100 if total_cells > 0 else 0
+        shark_percent = (count_shark / total_cells) * 100 if total_cells > 0 else 0
 
-                                                   
-                             # INTERFACE (PART 3 - PASSIVE GRID SCAN & RENDERING LOOP)
-                             
-                             
-        if not paused:
-            # 1. Surface vessel cosmetic spawn tracker
-            if not boat_data["active"] and random.random() < 0.003:
-                boat_data["active"] = True; boat_data["x"] = -60; boat_data["target_y"] = random.randint(0, grid_size - 1)
-                boat_data["y"] = boat_data["target_y"] * CELL_SIZE + (CELL_SIZE // 4); boat_data["emoji"] = random.choice(["🚢", "🛥️", "⛵"])
-            if boat_data["active"]:
-                boat_data["x"] += boat_data["speed"]
-                if boat_data["x"] > base_width + 60: boat_data["active"] = False
+        # --- DRAW VISUAL CANVAS FRAME ---
+        screen.fill(COLOR_BG) 
+
+        # Render background oceanic mesh layout using trigonometric wave maps
+        time_ms = pygame.time.get_ticks() * 0.003
+        for y in range(GRID_SIZE):
+            for x in range(GRID_SIZE):
+                rect = pygame.Rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1)
+                
+                wave_factor = math.sin(time_ms + wave_grid[y][x]) * 15
+                sea_blue = max(110, min(150, int(130 + wave_factor)))
+                sea_green = max(130, min(170, int(150 + wave_factor * 0.5)))
+                
+                pygame.draw.rect(screen, (14, sea_green, sea_blue), rect, border_radius=4)
+                
+                cell_content = grid_instance.check_cell(x, y)
+                if isinstance(cell_content, Fish):
+                    shadow = font_emoji.render("🐟", True, (218, 165, 32, 100))
+                    screen.blit(shadow, shadow.get_rect(center=(rect.centerx + 2, rect.centery + 2)))
+                    emoji = font_emoji.render("🐟", True, (255, 255, 255))
+                    screen.blit(emoji, emoji.get_rect(center=rect.center))
+                    
+                elif isinstance(cell_content, Shark):
+                    shadow = font_emoji.render("🦈", True, (139, 0, 0, 100))
+                    screen.blit(shadow, shadow.get_rect(center=(rect.centerx + 2, rect.centery + 2)))
+                    emoji = font_emoji.render("🦈", True, (255, 255, 255))
+                    screen.blit(emoji, emoji.get_rect(center=rect.center))
+                    
+                    # Core predator vitality circle metric bubble tracking remaining health properties
+                    energy_color = (239, 68, 68) if cell_content.energy <= 3 else (34, 197, 94)
+                    pygame.draw.circle(screen, (30, 41, 59), (rect.right - 12, rect.bottom - 12), 8)
+                    energy_surface = font_energy.render(str(cell_content.energy), True, energy_color)
+                    screen.blit(energy_surface, energy_surface.get_rect(center=(rect.right - 12, rect.bottom - 12)))
+
+        # Mask layer displayed when active status drops to pause state
+        if paused:
+            veil = pygame.Surface((GAME_SIZE, GAME_SIZE), pygame.SRCALPHA)
+            veil.fill(COLOR_PAUSE_VEIL)
+            screen.blit(veil, (0, 0))
+            pause_font = pygame.font.SysFont("Segoe UI", 24, bold=True)
+            pause_surface = pause_font.render("||  SIMULATION PAUSED", True, (252, 165, 165))
+            screen.blit(pause_surface, pause_surface.get_rect(center=(GAME_SIZE // 2, GAME_SIZE // 2)))
+
+        # --- MODULE DASHBOARD TELEMETRY GRIDS ---
+        metrics = [
+            {"label": "Chronons (Turns)", "val": f"{world_turn:05d}", "color": (147, 197, 253)},
+            {"label": "Fish Population", "val": f"{count_fish:03d} (🐟)", "color": (253, 224, 71)},
+            {"label": "Shark Population", "val": f"{count_shark:03d} (🦈)", "color": (248, 113, 113)},
+            {"label": "Engine Velocity", "val": f"{60//logic_delay} step/s", "color": (167, 139, 250)},
+            {"label": "Prey Density", "val": f"{fish_percent:.1f} %", "color": (52, 211, 153)},
+            {"label": "Predator Density", "val": f"{shark_percent:.1f} %", "color": (251, 146, 60)},
+            {"label": "Hardware Render", "val": f"{current_fps} FPS", "color": (34, 211, 238)},
+            {"label": "Input Keybindings", "val": "SPACE | UP/DOWN", "color": (148, 163, 184)}
+        ]
+
+        box_w = WINDOW_WIDTH // 4
+        box_h = 60
+        start_y = GAME_SIZE + 15
+
+        for i, item in enumerate(metrics):
+            col = i % 4
+            row = i // 4
+            bx = col * box_w + 8
+            by = start_y + row * box_h + 4
+
+            tile_rect = pygame.Rect(bx, by, box_w - 16, box_h - 8)
+            pygame.draw.rect(screen, COLOR_PANEL, tile_rect, border_radius=6)
+            pygame.draw.rect(screen, COLOR_BORDER, tile_rect, 1, border_radius=6)
+
+            lbl_surf = font_bold.render(item["label"], True, (148, 163, 184))
+            val_surf = font_value.render(item["val"], True, item["color"])
+            
+            screen.blit(lbl_surf, (bx + 10, by + 8))
+            screen.blit(val_surf, (bx + 10, by + 26))
+
+        pygame.display.flip() 
+        clock.tick()  
+
+    pygame.quit()
+    sys.exit()
+
+if __name__ == "__main__":
+    main()
