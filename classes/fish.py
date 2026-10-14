@@ -7,7 +7,7 @@ class Fish:
         self.x = x
         self.y = y
         self.reproduction_time = 8
-        self.turn = 0
+        self.age = 0
 
     def __str__(self):
         return str(self.x) + ": " + str(self.y)
@@ -19,7 +19,10 @@ class Fish:
     # reproduce method to move the fish and leave a baby behind at the old position
     def reproduce(self, world_turn: int): 
         # Check if the current world turn is a multiple of 8
-        if world_turn > 0 and world_turn % self.reproduction_time == 0:
+        self.age += 1
+        print(f"age {self.age}")
+        if (self.age >= self.reproduction_time) and (world_turn > 0) :
+            self.age = 0
             return True
 
     def get_x(self) -> int:

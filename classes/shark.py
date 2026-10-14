@@ -10,6 +10,7 @@ class Shark (Fish):
         self.y = y
         self.reproduction_time = 12
         self.stamina = 16
+        self.age = 0
 
     def __str__(self):
         return str(self.x) + ": " + str(self.y)
