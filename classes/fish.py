@@ -1,26 +1,23 @@
 '''fish class for Wa-Tor simulation
 manage fish entity and its behavior'''
 
-
 class Fish:
     def __init__(self, x: int, y: int) -> None:
         self.x = x
         self.y = y
         self.reproduction_time = 8
-        self.turn = 0
+        self.age = 0
 
     def __str__(self):
         return str(self.x) + ": " + str(self.y)
 
-    def move(self, x: int, y: int) -> None:
-        self.x = x
-        self.y = y
 
-
-          # reproduce method to move the fish and leave a baby behind at the old position
+    # reproduce method to move the fish and leave a baby behind at the old position
     def reproduce(self, world_turn: int): 
         # Check if the current world turn is a multiple of 8
-        if world_turn > 0 and world_turn % self.reproduction_time == 0:
+        self.age += 1
+        if (self.age >= self.reproduction_time) and (world_turn > 0) :
+            self.age = 0
             return True
 
     def get_x(self) -> int:
