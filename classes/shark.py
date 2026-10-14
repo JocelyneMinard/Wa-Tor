@@ -51,3 +51,4 @@ class Shark(Fish):
         """Removes shark when dying """
         if shark_id in shark_dict:
             del shark_dict[shark_id]
+            

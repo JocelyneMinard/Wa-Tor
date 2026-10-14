@@ -5,7 +5,7 @@ from classes.shark import Shark
 import random
 
 class World:
-    def __init__(self, my_grid, grid_size) -> None:
+    def __init__(self, my_grid, grid_size: int) -> None:
         self.population_init_fish = 5
         self.population_init_shark = 3
         self.my_grid = my_grid  
@@ -37,7 +37,7 @@ class World:
 
 
     # mouvement fish and shark
-    def move_entities(self):
+    def move_entities(self) -> None:
         # fix list of dict shark
         for entity_id in list(self.shark_dict.keys()):
             if entity_id in self.shark_dict:
@@ -49,7 +49,7 @@ class World:
                 self.move(self.fish_dict[entity_id], entity_id)
         self.my_grid.display()
 
-    def move(self, entity, entity_id):
+    def move(self, entity, entity_id: int):
         x = entity.get_x()
         y = entity.get_y()
         entity_type = entity.get_type()
