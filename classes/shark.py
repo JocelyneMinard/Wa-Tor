@@ -9,6 +9,7 @@ class Shark(Fish):
         self.x = x
         self.y = y
         self.reproduction_time = 12
+        self.original_stamina = 16
         self.stamina = 16
         self.age = 0
 
@@ -39,7 +40,7 @@ class Shark(Fish):
 
     def increase_stamina(self):
         #replenish stamina
-        self.stamina += 7
+        self.stamina == min(self.stamina + 7, self.original_stamina)
 
     # Decreases stamina
     def decrease_stamina(self):
