@@ -6,8 +6,8 @@ import random
 
 class World:
     def __init__(self, my_grid, grid_size) -> None:
-        self.population_init_fish = 25
-        self.population_init_shark = 5
+        self.population_init_fish = 5
+        self.population_init_shark = 1
         self.my_grid = my_grid  
         self.grid_size = grid_size
         self.fish_dict = {}
@@ -122,6 +122,7 @@ while w.turn < 0:
     print(f"--- Tour {w.turn} ---")
     w.move_entities()
     time.sleep(0.5)
+    
 from interface import launch_interface
 
 if __name__ == "__main__":
