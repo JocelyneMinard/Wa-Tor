@@ -8,7 +8,7 @@
 
 # 🌊 Wa-Tor: Shark & Fish Ecosystem Simulation
 
-A Python simulation of **Wa-Tor**, a toroidal ocean world (the grid wraps around on itself) where fish and sharks move, reproduce and eat each other. The project contains the object-oriented simulation logic and a **pygame** graphical interface with smooth animations and visual effects.
+A Python simulation of **Wa-Tor**, a toroidal ocean world (the grid wraps around on itself) where fish and sharks move, reproduce and eat each other. The project contains the object-oriented simulation logic, a **console version** launched by `Main.py`, and a **pygame** graphical version launched by `interface.py`, with smooth animations and visual effects.
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue) ![pygame](https://img.shields.io/badge/pygame-2.x-green)
 
@@ -33,21 +33,28 @@ Sharks play before fish on each turn. The populations therefore evolve in cycles
 
 ```
 .
-├── world.py       # Entry point: World class (simulation management) + interface launch
+├── Main.py        # Entry point: launches the simulation in the console
+├── world.py       # World class (simulation management)
 ├── grid.py        # Grid class used by world.py
 ├── fish.py        # Fish class used by world.py
 ├── shark.py       # Shark class used by world.py
-├── interface.py   # pygame graphical interface 
+├── interface.py   # Launches the graphical version of the simulation (pygame)
 └── README.md
 ```
 
-- **`world.py`** creates a `Grid` and a `World`, which randomly places the starting fish and sharks, then launches the interface. `World` handles movements, meals and reproduction. A console mode (turn-by-turn grid display) is present in the file but disabled: the `while w.turn < 0` loop never runs. Set a positive limit to enable it, for example `while w.turn < 50`.
-- **`interface.py`** is **standalone**: it contains its own `Fish`, `Shark` and `Grid` classes and runs its own simulation (15×15 grid, starting with 45 fish and 18 sharks). It does not reuse the objects from `world.py`, so you can run it on its own.
+- **`Main.py`** launches the simulation in the console (turn-by-turn grid display). It creates a `Grid` and a `World`, which randomly places the starting fish and sharks.
+- **`world.py`** contains the `World` class, which handles movements, meals and reproduction.
+- **`interface.py`** launches the **graphical version** of the simulation. It is **standalone**: it contains its own `Fish`, `Shark` and `Grid` classes and runs its own simulation (15×15 grid, starting with 45 fish and 18 sharks). It does not reuse the objects from `world.py`, so you can run it on its own.
 
+---
+
+## ⚙️ Installation
 
 ```bash
 pip install pygame
 ```
+
+`pygame` is only needed for the graphical version (`interface.py`). The console version (`Main.py`) does not need it.
 
 The 🐟 and 🦈 emojis use a system font: Segoe UI Emoji (Windows), Apple Color Emoji (macOS) or Noto Color Emoji (Linux). If you can't see them on Linux, install `fonts-noto-color-emoji`.
 
@@ -55,13 +62,13 @@ The 🐟 and 🦈 emojis use a system font: Segoe UI Emoji (Windows), Apple Colo
 
 ## ▶️ Running
 
-From `world.py` (simulation + interface):
+Console version (`Main.py`):
 
 ```bash
-python world.py
+python Main.py
 ```
 
-Or the interface alone:
+Graphical version (`interface.py`):
 
 ```bash
 python interface.py
@@ -70,6 +77,8 @@ python interface.py
 ---
 
 ## 🎮 Controls
+
+These controls apply to the graphical version (`interface.py`).
 
 | Key | Action |
 |---|---|
@@ -123,16 +132,12 @@ With `TARGET_FPS = 60` and `logic_delay = 14`, the simulation advances about 4 t
 
 ---
 
-## 📚 Further reading
-
-Wa-Tor was devised by A. K. Dewdney and presented in *Scientific American* in 1984. It is a classic example of a predator-prey simulation built on simple rules.
-
----
-
 ## 👥 Team
 
+We all worked together; everyone was responsible for their own file, though sometimes assisted by the others.
+
 | Person | Contribution |
-|---|---| We all worked together; everyone was responsible for their own file, though sometimes assisted by the others.
+|---|---|
 | **Matisse Guerguet** | Graphical interface (`interface.py`), fish (`fish.py`), helped on `world.py` and `grid.py` |
 | **Jocelyne** | `world.py` and `grid.py` |
 | **Romain** | Sharks (`shark.py`), helped on `world.py` and `grid.py` |
@@ -145,7 +150,7 @@ Wa-Tor was devised by A. K. Dewdney and presented in *Scientific American* in 19
 
 # 🌊 Wa-Tor : simulation d'écosystème requins / poissons
 
-Simulation en Python de **Wa-Tor**, un monde marin en forme de tore (la grille « boucle » sur elle-même) où des poissons et des requins se déplacent, se reproduisent et se mangent. Le projet contient la logique de simulation en programmation orientée objet et une interface graphique **pygame** avec animations et effets visuels.
+Simulation en Python de **Wa-Tor**, un monde marin en forme de tore (la grille « boucle » sur elle-même) où des poissons et des requins se déplacent, se reproduisent et se mangent. Le projet contient la logique de simulation en programmation orientée objet, une **version console** lancée par `Main.py` et une version graphique **pygame** lancée par `interface.py`, avec animations et effets visuels.
 
 
 ---
@@ -169,23 +174,28 @@ Les requins jouent avant les poissons à chaque tour. Les proportions de poisson
 
 ```
 .
-├── world.py       # Point d'entrée : classe World (gestion de la simulation) + lancement de l'interface
+├── Main.py        # Point d'entrée : lance la simulation dans la console
+├── world.py       # Classe World (gestion de la simulation)
 ├── grid.py        # Classe Grid utilisée par world.py
 ├── fish.py        # Classe Fish utilisée par world.py
 ├── shark.py       # Classe Shark utilisée par world.py
-├── interface.py   # Interface graphique pygame 
+├── interface.py   # Lance la version graphique de la simulation (pygame)
 └── README.md
 ```
 
-- **`world.py`** crée une `Grid` et un `World`, qui place au hasard les poissons et les requins de départ, puis lance l'interface. `World` gère les déplacements, les repas et les reproductions. Un mode console (affichage de la grille tour par tour) est présent dans le fichier mais désactivé : la boucle `while w.turn < 0` ne s'exécute jamais. Mets une limite positive pour l'activer, par exemple `while w.turn < 50`.
-- **`interface.py`** est **autonome** : il contient ses propres classes `Fish`, `Shark` et `Grid`, et fait tourner sa propre simulation (grille 15×15, 45 poissons et 18 requins au départ). Il ne réutilise pas les objets de `world.py`. Tu peux donc le lancer seul.
+- **`Main.py`** lance la simulation dans la console (affichage de la grille tour par tour). Il crée une `Grid` et un `World`, qui place au hasard les poissons et les requins de départ.
+- **`world.py`** contient la classe `World`, qui gère les déplacements, les repas et les reproductions.
+- **`interface.py`** lance la **version graphique** de la simulation. Il est **autonome** : il contient ses propres classes `Fish`, `Shark` et `Grid`, et fait tourner sa propre simulation (grille 15×15, 45 poissons et 18 requins au départ). Il ne réutilise pas les objets de `world.py`. Tu peux donc le lancer seul.
 
 ---
 
+## ⚙️ Installation
 
 ```bash
 pip install pygame
 ```
+
+`pygame` n'est nécessaire que pour la version graphique (`interface.py`). La version console (`Main.py`) n'en a pas besoin.
 
 Les émojis 🐟 et 🦈 utilisent une police système : Segoe UI Emoji (Windows), Apple Color Emoji (macOS) ou Noto Color Emoji (Linux). Si tu ne les vois pas sous Linux, installe `fonts-noto-color-emoji`.
 
@@ -193,13 +203,13 @@ Les émojis 🐟 et 🦈 utilisent une police système : Segoe UI Emoji (Windows
 
 ## ▶️ Lancement
 
-Depuis `world.py` (simulation + interface) :
+Version console (`Main.py`) :
 
 ```bash
-python world.py
+python Main.py
 ```
 
-Ou l'interface seule :
+Version graphique (`interface.py`) :
 
 ```bash
 python interface.py
@@ -208,6 +218,8 @@ python interface.py
 ---
 
 ## 🎮 Commandes
+
+Ces commandes s'appliquent à la version graphique (`interface.py`).
 
 | Touche | Action |
 |---|---|
@@ -261,16 +273,12 @@ Avec `TARGET_FPS = 60` et `logic_delay = 14`, la simulation avance d'environ 4 t
 
 ---
 
-## 📚 Pour aller plus loin
-
-Wa-Tor a été imaginé par A. K. Dewdney et présenté dans *Scientific American* en 1984. C'est un exemple classique de simulation proie-prédateur à base de règles simples.
-
----
-
 ## 👥 Équipe
 
+Nous avons tous travaillé ensemble, chacun était responsable de son fichier, mais parfois aidé par les autres.
+
 | Personne | Contribution |
-|---|nous avont tous travaillé ensemble, chacun était responsable de son fichier, mais parfois aider par les autres 
+|---|---|
 | **Matisse Guerguet** | Interface graphique (`interface.py`), poissons (`fish.py`), aide sur `world.py` et `grid.py` |
 | **Jocelyne** | `world.py` et `grid.py` |
 | **Romain** | Requins (`shark.py`), aide sur `world.py` et `grid.py` |
