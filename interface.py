@@ -3,6 +3,7 @@ import pygame
 import random
 import sys
 import math
+from classes.world import World
 
 # --- GRAPHICAL SCREEN CONFIGURATION ---
 CELL_SIZE = 50
@@ -411,4 +412,5 @@ def launch_interface(external_grid=None):
     sys.exit()
 
 if __name__ == "__main__":
-    launch_interface()
+    my_world_grid = Grid(15) 
+    launch_interface(my_world_grid)

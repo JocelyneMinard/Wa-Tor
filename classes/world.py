@@ -108,23 +108,4 @@ class World:
             entity.y = y
             self.my_grid.affect_entity(x, y, entity_type)
             return(x, y)
-        
 
-grid_size = 10
-my_grid = Grid(grid_size)
-w = World(my_grid, grid_size)
-
-
-
-while w.turn < 0:
-    #os.system('clear') 
-    w.turn += 1
-    print(f"--- Tour {w.turn} ---")
-    w.move_entities()
-    time.sleep(0.5)
-    
-from interface import launch_interface
-
-if __name__ == "__main__":
-    my_world_grid = Grid(15) 
-    launch_interface(my_world_grid)
