@@ -21,8 +21,8 @@ The world is a square grid whose edges are connected: an entity leaving on the r
 | | 🐟 Fish | 🦈 Shark |
 |---|---|---|
 | **Movement** | To a random empty neighbouring cell (up, down, left, right) | To a neighbouring fish if there is one, otherwise to a random empty cell |
-| **Food** | None | Eating a fish gives **+5 energy** (maximum 12) |
-| **Energy** | Not applicable | Starts at **8**, loses **1 per turn**, the shark dies at 0 |
+| **Food** | None | Eating a fish gives **+7 energy** (maximum 16) |
+| **Energy** | Not applicable | Starts at **16**, loses **1 per turn**, the shark dies at 0 |
 | **Reproduction** | A baby appears every **8 turns** | A baby appears every **12 turns** |
 
 Sharks play before fish on each turn. The populations therefore evolve in cycles: too many sharks empty the fish population, then the sharks starve, then the fish repopulate the grid.
@@ -33,12 +33,14 @@ Sharks play before fish on each turn. The populations therefore evolve in cycles
 
 ```
 .
-├── Main.py        # Entry point: launches the simulation in the console
-├── world.py       # World class (simulation management)
-├── grid.py        # Grid class used by world.py
-├── fish.py        # Fish class used by world.py
-├── shark.py       # Shark class used by world.py
-├── interface.py   # Launches the graphical version of the simulation (pygame)
+├── main.py              # Entry point: launches the simulation in the console
+├── interface.py         # Launches the graphical version of the simulation (pygame)
+├── requierement.txt     # Python dependencies
+├── classes/
+│   ├── world.py         # World class (simulation management)
+│   ├── grid.py          # Grid class used by world.py
+│   ├── fish.py          # Fish class used by world.py
+│   └── shark.py         # Shark class used by world.py
 └── README.md
 ```
 
@@ -50,7 +52,7 @@ Sharks play before fish on each turn. The populations therefore evolve in cycles
 ## ⚙️ Installation
 
 ```bash
-pip install pygame
+pip install pygame-ce or launch requierement.txt
 ```
 
 `pygame` is only needed for the graphical version (`interface.py`). The console version (`Main.py`) does not need it.
@@ -137,9 +139,9 @@ We all worked together; everyone was responsible for their own file, though some
 
 | Person | Contribution |
 |---|---|
-| **Matisse Guerguet** | Graphical interface (`interface.py`), fish (`fish.py`), helped on `world.py` and `grid.py` |
-| **Jocelyne** | `world.py` and `grid.py` |
-| **Romain** | Sharks (`shark.py`), helped on `world.py` and `grid.py` |
+| **Matisse** | Graphical interface (`interface.py`) and fish (`fish.py`); helped on `world.py` and `grid.py`; also wrote the README |
+| **Romain** | Sharks (`shark.py`); helped on `world.py` and `grid.py` |
+| **Jocelyne** | `world.py` and `grid.py`; helped on fish (`fish.py`) and sharks (`shark.py`) |
 
 <sub>[⬆ Back to top / Retour en haut](#top) · [🇫🇷 Version française](#francais)</sub>
 
@@ -161,8 +163,8 @@ Le monde est une grille carrée dont les bords sont reliés : une entité qui so
 | | 🐟 Poisson | 🦈 Requin |
 |---|---|---|
 | **Déplacement** | Vers une case voisine vide (haut, bas, gauche, droite), au hasard | Vers un poisson voisin s'il y en a un, sinon vers une case vide, au hasard |
-| **Nourriture** | Aucune | Mange un poisson : **+5 énergie** (maximum 12) |
-| **Énergie** | Sans objet | Démarre à **8**, perd **1 par tour**, le requin meurt à 0 |
+| **Nourriture** | Aucune | Mange un poisson : **+7 énergie** (maximum 16) |
+| **Énergie** | Sans objet | Démarre à **16**, perd **1 par tour**, le requin meurt à 0 |
 | **Reproduction** | Un petit apparaît tous les **8 tours** | Un petit apparaît tous les **12 tours** |
 
 Les requins jouent avant les poissons à chaque tour. Les proportions de poissons et de requins évoluent donc en cycles : trop de requins vident les poissons, puis les requins meurent de faim, puis les poissons repeuplent la grille.
@@ -173,12 +175,14 @@ Les requins jouent avant les poissons à chaque tour. Les proportions de poisson
 
 ```
 .
-├── Main.py        # Point d'entrée : lance la simulation dans la console
-├── world.py       # Classe World (gestion de la simulation)
-├── grid.py        # Classe Grid utilisée par world.py
-├── fish.py        # Classe Fish utilisée par world.py
-├── shark.py       # Classe Shark utilisée par world.py
-├── interface.py   # Lance la version graphique de la simulation (pygame)
+├── main.py              # Point d'entrée : lance la simulation dans la console
+├── interface.py         # Lance la version graphique de la simulation (pygame)
+├── requierement.txt     # Dépendances Python
+├── classes/
+│   ├── world.py         # Classe World (gestion de la simulation)
+│   ├── grid.py          # Classe Grid utilisée par world.py
+│   ├── fish.py          # Classe Fish utilisée par world.py
+│   └── shark.py         # Classe Shark utilisée par world.py
 └── README.md
 ```
 
@@ -191,7 +195,7 @@ Les requins jouent avant les poissons à chaque tour. Les proportions de poisson
 ## ⚙️ Installation
 
 ```bash
-pip install pygame
+pip install pygame-ce ou lancer le fichier requirement.txt
 ```
 
 `pygame` n'est nécessaire que pour la version graphique (`interface.py`). La version console (`Main.py`) n'en a pas besoin.
@@ -278,9 +282,9 @@ Nous avons tous travaillé ensemble, chacun était responsable de son fichier, m
 
 | Personne | Contribution |
 |---|---|
-| **Matisse Guerguet** | Interface graphique (`interface.py`), poissons (`fish.py`), aide sur `world.py` et `grid.py` |
-| **Jocelyne** | `world.py` et `grid.py` |
-| **Romain** | Requins (`shark.py`), aide sur `world.py` et `grid.py` |
+| **Matisse** | Interface graphique (`interface.py`) et poissons (`fish.py`) ; aide sur `world.py` et `grid.py` ; a aussi rédigé le README |
+| **Romain** | Requins (`shark.py`) ; aide sur `world.py` et `grid.py` |
+| **Jocelyne** | `world.py` et `grid.py` ; aide sur les poissons (`fish.py`) et les requins (`shark.py`) |
 
 
 <sub>[⬆ Retour en haut / Back to top](#top) · [🇬🇧 English version](#english)</sub>
