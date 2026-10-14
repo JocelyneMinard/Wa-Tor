@@ -6,12 +6,10 @@ from classes.fish import Fish
 #1 Inherits from Fish class
 class Shark(Fish):
     def __init__(self, x: int, y: int):
-        self.x = x
-        self.y = y
+        super().__init__(x, y)  # x, y, age from Fish
         self.reproduction_time = 12
         self.original_stamina = 16
         self.stamina = 16
-        self.age = 0
 
     def __str__(self):
         return str(self.x) + ": " + str(self.y)
