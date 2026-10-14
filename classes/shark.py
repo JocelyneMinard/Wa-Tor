@@ -11,16 +11,6 @@ class Shark(Fish):
         self.original_stamina = 16
         self.stamina = 16
 
-    def __str__(self):
-        return str(self.x) + ": " + str(self.y)
-
-    # Return shark's position on the grid   
-    def get_x(self):
-        return self.x
-    
-    def get_y(self):
-        return self.y
-
     # Return shark's type   
     def get_type(self):
         return "shark"
@@ -28,7 +18,7 @@ class Shark(Fish):
     def eat_fish(self, target_x, target_y, item, fish_dict):
         for fid, fobj in list(item):
             if fobj.get_x() == target_x and fobj.get_y() == target_y:
-                Fish.remove_fish(self, fish_dict, fid)
+                fobj.remove_entity(fish_dict, fid)
                 self.increase_stamina()
                 break
     
@@ -43,9 +33,3 @@ class Shark(Fish):
     # Decreases stamina
     def decrease_stamina(self):
         self.stamina -= 1       
-
-    # Dying shark
-    def remove_shark(self, shark_dict: dict, shark_id) -> None:
-        """Removes shark when dying """
-        if shark_id in shark_dict:
-            del shark_dict[shark_id]
