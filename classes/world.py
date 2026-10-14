@@ -5,7 +5,7 @@ from classes.shark import Shark
 import random
 
 class World:
-    def __init__(self, my_grid, grid_size) -> None:
+    def __init__(self, my_grid, grid_size: int) -> None:
         self.population_init_fish = 5
         self.population_init_shark = 3
         self.my_grid = my_grid  
@@ -20,24 +20,24 @@ class World:
         for i in range(self.population_init_fish):
             if my_grid_empty_cells:
                 x, y = random.choice(my_grid_empty_cells)
-                my_grid_empty_cells.remove((x, y))  # On enlève la case pour éviter les doublons
+                my_grid_empty_cells.remove((x, y))  # This removes doubles from cells
                 self.my_grid.affect_entity(x, y, "fish")
                 self.fish_dict[i] = Fish(x, y)
 
-        # Remplissage des Requins
+        # Filling grid with sharks
         if int(self.population_init_shark * 0.3) >= self.grid_size:
             self.population_init_shark = int(self.population_init_shark * 0.3)
         for i in range(self.population_init_shark):
             if my_grid_empty_cells:
                 x, y = random.choice(my_grid_empty_cells)
-                my_grid_empty_cells.remove((x, y))  # On enlève la case de la liste 
+                my_grid_empty_cells.remove((x, y))  # Removing last cell
                 self.my_grid.affect_entity(x, y, "shark")
                 self.shark_dict[i] = Shark(x, y)
         my_grid.display()
 
 
     # mouvement fish and shark
-    def move_entities(self):
+    def move_entities(self) -> None:
         # fix list of dict shark
         for entity_id in list(self.shark_dict.keys()):
             if entity_id in self.shark_dict:
@@ -49,7 +49,7 @@ class World:
                 self.move(self.fish_dict[entity_id], entity_id)
         self.my_grid.display()
 
-    def move(self, entity, entity_id):
+    def move(self, entity, entity_id: int):
         x = entity.get_x()
         y = entity.get_y()
         entity_type = entity.get_type()
@@ -72,10 +72,10 @@ class World:
             case "shark":
                 if fish_cells:                    
                     dx, dy = random.choice(fish_cells)
-                    # Calcul de la position du poisson à manger (avec wrapping)
+                    # Calculating predetion system, necessary for the shark to eat
                     target_x = (x + dx) % self.grid_size
                     target_y = (y + dy) % self.grid_size
-                    # Trouver et supprimer le poisson du dictionnaire
+                    # Find and delete fish from position
                     entity.eat_fish(target_x, target_y, self.fish_dict.items(),  self.fish_dict)
                     moved = True
                     self.my_grid.affect_entity(x, y, "empty")
@@ -94,7 +94,7 @@ class World:
                     entity.decrease_stamina()
                
                 if entity.get_stamina() <= 0:
-                    entity.remove_shark(self.shark_dict, entity_id)
+                    entity.remove_entity(self.shark_dict, entity_id)
                     current_x = (x + dx) % self.grid_size if moved else x
                     current_y = (y + dy) % self.grid_size if moved else y
                     self.my_grid.affect_entity(current_x, current_y, "empty")
@@ -104,7 +104,7 @@ class World:
             # Updating positions with wrapping
             x = (x + dx) % self.grid_size
             y = (y + dy) % self.grid_size
-            entity.x = x    #update  in dictonary the entity position
+            entity.x = x    #Update  in dictonary the entity position
             entity.y = y
             self.my_grid.affect_entity(x, y, entity_type)
             return(x, y)
