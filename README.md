@@ -44,8 +44,7 @@ Sharks play before fish on each turn. The populations therefore evolve in cycles
 
 - **`Main.py`** launches the simulation in the console (turn-by-turn grid display). It creates a `Grid` and a `World`, which randomly places the starting fish and sharks.
 - **`world.py`** contains the `World` class, which handles movements, meals and reproduction.
-- **`interface.py`** launches the **graphical version** of the simulation. It is **standalone**: it contains its own `Fish`, `Shark` and `Grid` classes and runs its own simulation (15×15 grid, starting with 45 fish and 18 sharks). It does not reuse the objects from `world.py`, so you can run it on its own.
-
+- **`interface.py`** launches the **graphical version** of the simulation. 
 ---
 
 ## ⚙️ Installation
@@ -185,7 +184,7 @@ Les requins jouent avant les poissons à chaque tour. Les proportions de poisson
 
 - **`Main.py`** lance la simulation dans la console (affichage de la grille tour par tour). Il crée une `Grid` et un `World`, qui place au hasard les poissons et les requins de départ.
 - **`world.py`** contient la classe `World`, qui gère les déplacements, les repas et les reproductions.
-- **`interface.py`** lance la **version graphique** de la simulation. Il est **autonome** : il contient ses propres classes `Fish`, `Shark` et `Grid`, et fait tourner sa propre simulation (grille 15×15, 45 poissons et 18 requins au départ). Il ne réutilise pas les objets de `world.py`. Tu peux donc le lancer seul.
+- **`interface.py`** lance la **version graphique** de la simulation. 
 
 ---
 
