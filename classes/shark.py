@@ -4,8 +4,8 @@ This file inherits from Fish class"""
 from classes.fish import Fish
 
 #1 Inherits from Fish class
-class Shark (Fish):
-    def __init__ (self, x: int, y: int):
+class Shark(Fish):
+    def __init__(self, x: int, y: int):
         self.x = x
         self.y = y
         self.reproduction_time = 12
@@ -30,8 +30,8 @@ class Shark (Fish):
         for fid, fobj in list(item):
             if fobj.get_x() == target_x and fobj.get_y() == target_y:
                 Fish.remove_fish(self, fish_dict, fid)
+                self.increase_stamina()
                 break
-        self.increase_stamina()
     
     def get_stamina(self) :
         #replenish stamina

@@ -1,5 +1,4 @@
 # This file manages the simulation grid
-import random
 
 class Grid:
     def __init__(self, size: int) -> None:

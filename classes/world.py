@@ -52,13 +52,13 @@ class World:
     def move(self, entity, entity_id):
         x = entity.get_x()
         y = entity.get_y()
-        type = entity.get_type()
+        entity_type = entity.get_type()
         empty_cells, fish_cells  = self.my_grid.check_possible_moves(x, y)
         moved = False
         dx = 0
         dy = 0
 
-        match type:
+        match entity_type:
             case "fish":
                 if(empty_cells):
                     dx, dy = random.choice(empty_cells)
@@ -106,6 +106,6 @@ class World:
             y = (y + dy) % self.grid_size
             entity.x = x    #update  in dictonary the entity position
             entity.y = y
-            self.my_grid.affect_entity(x, y, type)
+            self.my_grid.affect_entity(x, y, entity_type)
             return(x, y)
         
