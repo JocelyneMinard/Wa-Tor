@@ -106,10 +106,10 @@ class World:
                 
         if (moved == True ):
             # Updating positions with wrapping
-            x = (x + dx) % self.grid_size
-            y = (y + dy) % self.grid_size
-            entity.x = x    #Update  in dictonary the entity position
-            entity.y = y
-            self.my_grid.affect_entity(x, y, entity_type)
-            return(x, y)
+            new_x = (x + dx) % self.grid_size
+            new_y = (y + dy) % self.grid_size
+            #Update  in dictonary the entity position
+            entity.set_position(new_x, new_y)
+            self.my_grid.affect_entity(new_x, new_y, entity_type)
+            return (new_x, new_y)
 

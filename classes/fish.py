@@ -20,6 +20,10 @@ class Fish:
     def get_type(self) -> str:
         return "fish"
 
+    def set_position(self, new_x: int, new_y: int) -> None:
+        self.x = new_x
+        self.y = new_y
+
     # reproduce method to move the fish and leave a baby behind at the old position
     def reproduce(self, world_turn: int) -> bool:
         # Check if the current world turn is a multiple of 8
