@@ -15,8 +15,8 @@ class World:
         self.turn = 0
         my_grid_empty_cells = my_grid.check_grid()
 
-        if int(self.population_init_fish * 0.6) >= self.grid_size:
-            self.population_init_fish = int(self.population_init_fish * 0.6)
+        if int(self.population_init_fish * 0.5) >= (self.grid_size * self.grid_size):
+            self.population_init_fish = int((self.grid_size * self.grid_size) * 0.5)
         for i in range(self.population_init_fish):
             if my_grid_empty_cells:
                 x, y = random.choice(my_grid_empty_cells)
@@ -25,8 +25,8 @@ class World:
                 self.fish_dict[i] = Fish(x, y)
 
         # Filling grid with sharks
-        if int(self.population_init_shark * 0.3) >= self.grid_size:
-            self.population_init_shark = int(self.population_init_shark * 0.3)
+        if int(self.population_init_shark * 0.3) >= (self.grid_size * self.grid_size):
+            self.population_init_shark = int((self.grid_size * self.grid_size) * 0.3)
         for i in range(self.population_init_shark):
             if my_grid_empty_cells:
                 x, y = random.choice(my_grid_empty_cells)
