@@ -15,8 +15,8 @@ class World:
         self.turn = 0
         my_grid_empty_cells = my_grid.check_grid()
 
-        if int(self.population_init_fish * 0.6) >= self.grid_size:
-            self.population_init_fish = int(self.population_init_fish * 0.6)
+        if int(self.population_init_fish * 0.5) >= (self.grid_size * self.grid_size):
+            self.population_init_fish = int((self.grid_size * self.grid_size) * 0.5)
         for i in range(self.population_init_fish):
             if my_grid_empty_cells:
                 x, y = random.choice(my_grid_empty_cells)
@@ -25,8 +25,8 @@ class World:
                 self.fish_dict[i] = Fish(x, y)
 
         # Filling grid with sharks
-        if int(self.population_init_shark * 0.3) >= self.grid_size:
-            self.population_init_shark = int(self.population_init_shark * 0.3)
+        if int(self.population_init_shark * 0.3) >= (self.grid_size * self.grid_size):
+            self.population_init_shark = int((self.grid_size * self.grid_size) * 0.3)
         for i in range(self.population_init_shark):
             if my_grid_empty_cells:
                 x, y = random.choice(my_grid_empty_cells)
@@ -76,7 +76,10 @@ class World:
                     target_x = (x + dx) % self.grid_size
                     target_y = (y + dy) % self.grid_size
                     # Find and delete fish from position
-                    entity.eat_fish(target_x, target_y, self.fish_dict.items(),  self.fish_dict)
+                    for fid, fobj in list(self.fish_dict.items()):
+                        if fobj.get_x() == target_x and fobj.get_y() == target_y:
+                            del self.fish_dict[fid]
+                    entity.eat()
                     moved = True
                     self.my_grid.affect_entity(x, y, "empty")
                     entity.decrease_stamina()
@@ -94,8 +97,9 @@ class World:
                     entity.decrease_stamina()
                
                 if entity.get_stamina() <= 0:
-                    entity.remove_entity(self.shark_dict, entity_id)
-                    # remove cell when shark just move or origin cell if don.t move
+                    # delete shark
+                    del self.shark_dict[entity_id]
+                    # remove cell when shark just move or origin cell if don' move
                     if moved:
                         current_x = (x + dx) % self.grid_size
                         current_y = (y + dy) % self.grid_size
@@ -106,10 +110,10 @@ class World:
                 
         if (moved == True ):
             # Updating positions with wrapping
-            x = (x + dx) % self.grid_size
-            y = (y + dy) % self.grid_size
-            entity.x = x    #Update  in dictonary the entity position
-            entity.y = y
-            self.my_grid.affect_entity(x, y, entity_type)
-            return(x, y)
+            new_x = (x + dx) % self.grid_size
+            new_y = (y + dy) % self.grid_size
+            #Update  in dictonary the entity position
+            entity.set_position(new_x, new_y)
+            self.my_grid.affect_entity(new_x, new_y, entity_type)
+            return (new_x, new_y)
 

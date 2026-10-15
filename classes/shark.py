@@ -15,12 +15,8 @@ class Shark(Fish):
     def get_type(self):
         return "shark"
     
-    def eat_fish(self, target_x, target_y, item, fish_dict):
-        for fid, fobj in list(item):
-            if fobj.get_x() == target_x and fobj.get_y() == target_y:
-                fobj.remove_entity(fish_dict, fid)
-                self.increase_stamina()
-                break
+    def eat(self):
+        self.increase_stamina()
     
     def get_stamina(self) :
         #replenish stamina
