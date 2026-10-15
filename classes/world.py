@@ -95,9 +95,13 @@ class World:
                
                 if entity.get_stamina() <= 0:
                     entity.remove_entity(self.shark_dict, entity_id)
-                    current_x = (x + dx) % self.grid_size if moved else x
-                    current_y = (y + dy) % self.grid_size if moved else y
-                    self.my_grid.affect_entity(current_x, current_y, "empty")
+                    # remove cell when shark just move or origin cell if don.t move
+                    if moved:
+                        current_x = (x + dx) % self.grid_size
+                        current_y = (y + dy) % self.grid_size
+                        self.my_grid.affect_entity(current_x, current_y, "empty")
+                    else:
+                        self.my_grid.affect_entity(x, y, "empty")
                     return
                 
         if (moved == True ):

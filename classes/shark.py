@@ -28,7 +28,7 @@ class Shark(Fish):
 
     def increase_stamina(self):
         #replenish stamina
-        self.stamina == min(self.stamina + 7, self.original_stamina)
+        self.stamina = min(self.stamina + 7, self.original_stamina)
 
     # Decreases stamina
     def decrease_stamina(self):
