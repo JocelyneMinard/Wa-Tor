@@ -69,7 +69,11 @@ class Grid:
 
 # Zone de test
 if __name__ == "__main__":
-    my_grid = Grid(10)
+    style_sea = f"\033[96m██\033[0m"
+    style_fish = f"\033[96m\033[106m🐟\033[0m"
+    style_shark = f"\033[96m\033[106m🦈\033[0m"
+
+    my_grid = Grid(10, style_sea, style_fish, style_shark)
     my_grid.affect_entity(0, 0, "fish")
     my_grid.affect_entity(1, 0, "fish")
     my_grid.display()
