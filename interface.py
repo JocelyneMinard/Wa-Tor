@@ -1,8 +1,13 @@
 # interface.py
-import pygame
+import io
+import math
 import random
 import sys
-import math
+from contextlib import redirect_stdout
+
+import pygame
+
+from classes.grid import Grid
 from classes.world import World
 
 # --- GRAPHICAL SCREEN CONFIGURATION ---
@@ -20,116 +25,20 @@ COLOR_PAUSE_VEIL = (15, 23, 42, 180)
 COLOR_PANEL = (30, 41, 59)
 COLOR_BORDER = (71, 85, 105)
 
-# --- INTERNAL STANDALONE LOGIC CLASSES ---
-
-class Fish:
-    def __init__(self, x: int, y: int) -> None:
-        self.x = x
-        self.y = y
-        self.px = x  # position at the start of the turn (for smooth animation)
-        self.py = y
-
-    def reproduce(self, nx: int, ny: int, world_turn: int):
-        old_x, old_y = self.x, self.y
-        self.x, self.y = nx, ny
-        if world_turn > 0 and world_turn % 8 == 0:
-            return Fish(old_x, old_y)
-        return None
-
-class Shark:
-    def __init__(self, x: int, y: int) -> None:
-        self.x = x
-        self.y = y
-        self.px = x
-        self.py = y
-        self.energy = 8
-
-    def reproduce(self, nx: int, ny: int, world_turn: int):
-        old_x, old_y = self.x, self.y
-        self.x, self.y = nx, ny
-        if world_turn > 0 and world_turn % 12 == 0:
-            return Shark(old_x, old_y)
-        return None
-
-class Grid:
-    def __init__(self, size: int) -> None:
-        self.size = size
-        self.grid = [[None for _ in range(self.size)] for _ in range(self.size)]
-        self.removed = []  # entities eaten / starved this turn (drawing only)
-
-    def affect_entity(self, x, y, entity):
-        self.grid[y][x] = entity
-
-    def check_cell(self, x, y):
-        return self.grid[y][x]
-
-    def check_cells(self, x, y):
-        possible_moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-        adjacent_cells = []
-        for dx, dy in possible_moves:
-            nx = (x + dx) % self.size
-            ny = (y + dy) % self.size
-            adjacent_cells.append((nx, ny))
-
-        empty_cells = []
-        fish_cells = []
-        for cx, cy in adjacent_cells:
-            content = self.check_cell(cx, cy)
-            if content is None:
-                empty_cells.append((cx, cy))
-            elif isinstance(content, Fish):
-                fish_cells.append((cx, cy))
-        return empty_cells, fish_cells
-
-    def turn_fish(self, x, y, world_turn: int):
-        fish = self.grid[y][x]
-        if fish is None:
-            return
-        empty_cells, _ = self.check_cells(x, y)
-        if empty_cells:
-            nx, ny = random.choice(empty_cells)
-            baby = fish.reproduce(nx, ny, world_turn)
-            self.affect_entity(nx, ny, fish)
-            self.affect_entity(x, y, baby)
-
-    def turn_shark(self, x, y, world_turn: int):
-        shark = self.grid[y][x]
-        if shark is None:
-            return
-
-        shark.energy -= 1
-        if shark.energy <= 0:
-            self.removed.append(shark)
-            self.affect_entity(x, y, None)
-            return
-
-        # FIX: check_cells returns (empty_cells, fish_cells) in this order
-        empty_cells, fish_cells = self.check_cells(x, y)
-
-        if fish_cells:
-            nx, ny = random.choice(fish_cells)
-            self.removed.append(self.grid[ny][nx])
-            shark.energy = min(shark.energy + 7, 16)
-            shark.x, shark.y = nx, ny
-            self.affect_entity(nx, ny, shark)
-            self.affect_entity(x, y, None)
-            if world_turn > 0 and world_turn % 12 == 0:
-                baby = Shark(x, y)
-                self.affect_entity(x, y, baby)
-            return
-
-        if empty_cells:
-            nx, ny = random.choice(empty_cells)
-            baby = shark.reproduce(nx, ny, world_turn)
-            self.affect_entity(nx, ny, shark)
-            self.affect_entity(x, y, baby)
-
 # --- MAIN ENGINE CONTROL LOOP ---
 
 TARGET_FPS = 60
 START_FULLSCREEN = False  # False = start in a normal window
 EMOJI_RATIO = 0.6  # emoji size relative to a cell (0.6 = 60%)
 WAVE_LEVELS = range(-15, 16)  # integer wave amplitudes -> cached sea tiles
+
+
+def quiet(func, *args):
+    # World and Grid print the grid in the console at every turn:
+    # we silence that output in the graphical version
+    with redirect_stdout(io.StringIO()):
+        return func(*args)
+
 
 def launch_interface(external_grid=None):
     pygame.init()
@@ -233,36 +142,22 @@ def launch_interface(external_grid=None):
         return surf
 
     # ---------- SIMULATION STATE ----------
-    grid_instance = Grid(GRID_SIZE)
-    world_turn = 0
+    # The simulation itself lives in classes/world.py: the interface only calls it and draws it
+    grid_instance = external_grid if external_grid is not None else Grid(GRID_SIZE)
+    world = quiet(World, grid_instance, GRID_SIZE)
     paused = False
 
     tick_count = 0
     logic_delay = 14
     wave_grid = [[random.uniform(0, 100) for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
 
-    for _ in range(45):
-        rx, ry = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
-        if grid_instance.check_cell(rx, ry) is None:
-            grid_instance.affect_entity(rx, ry, Fish(rx, ry))
+    # For the smooth animation (drawing only): where each entity was at the start of the turn,
+    # and which entities disappeared this turn (eaten fish, dead sharks) -> (is_fish, x, y)
+    prev_pos = {}
+    removed = []
 
-    for _ in range(18):
-        rx, ry = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
-        if grid_instance.check_cell(rx, ry) is None:
-            grid_instance.affect_entity(rx, ry, Shark(rx, ry))
-
-    # Metrics only change when the simulation ticks, so compute them there
-    def count_population():
-        f = s = 0
-        for row in grid_instance.grid:
-            for cell in row:
-                if isinstance(cell, Fish):
-                    f += 1
-                elif isinstance(cell, Shark):
-                    s += 1
-        return f, s
-
-    count_fish, count_shark = count_population()
+    count_fish = len(world.fish_dict)
+    count_shark = len(world.shark_dict)
     total_cells = GRID_SIZE * GRID_SIZE
     sin = math.sin
 
@@ -290,29 +185,23 @@ def launch_interface(external_grid=None):
             tick_count += 1
             if tick_count >= logic_delay:
                 tick_count = 0
-                world_turn += 1
-                grid_instance.removed.clear()
 
-                fishes_to_update = []
-                sharks_to_update = []
-                for y in range(GRID_SIZE):
-                    for x in range(GRID_SIZE):
-                        cell = grid_instance.grid[y][x]
-                        if cell is not None:
-                            cell.px, cell.py = x, y  # remember where it was before moving
-                        if isinstance(cell, Fish):
-                            fishes_to_update.append((x, y))
-                        elif isinstance(cell, Shark):
-                            sharks_to_update.append((x, y))
+                # Remember positions before the turn (for the animation)
+                fish_before = list(world.fish_dict.values())
+                sharks_before = list(world.shark_dict.values())
+                prev_pos = {id(e): (e.x, e.y) for e in fish_before + sharks_before}
 
-                for sx, sy in sharks_to_update:
-                    if isinstance(grid_instance.grid[sy][sx], Shark):
-                        grid_instance.turn_shark(sx, sy, world_turn)
-                for fx, fy in fishes_to_update:
-                    if isinstance(grid_instance.grid[fy][fx], Fish):
-                        grid_instance.turn_fish(fx, fy, world_turn)
+                # One turn of the simulation, played by World
+                world.turn += 1
+                quiet(world.move_entities)
 
-                count_fish, count_shark = count_population()
+                # Entities that are gone after the turn
+                alive = {id(e) for e in world.fish_dict.values()} | {id(e) for e in world.shark_dict.values()}
+                removed = [(True, *prev_pos[id(e)]) for e in fish_before if id(e) not in alive]
+                removed += [(False, *prev_pos[id(e)]) for e in sharks_before if id(e) not in alive]
+
+                count_fish = len(world.fish_dict)
+                count_shark = len(world.shark_dict)
 
         fish_percent = (count_fish / total_cells) * 100
         shark_percent = (count_shark / total_cells) * 100
@@ -322,7 +211,6 @@ def launch_interface(external_grid=None):
         anim_p = min(1.0, (tick_count + 1) / logic_delay)
 
         time_ms = pygame.time.get_ticks() * 0.003
-        grid_cells = grid_instance.grid
         for y in range(GRID_SIZE):
             wave_row = wave_grid[y]
             py = y * CELL_SIZE
@@ -354,36 +242,32 @@ def launch_interface(external_grid=None):
         # Entities eaten / starved this turn: fade out where they were
         fade = int(255 * (1.0 - anim_p))
         if fade > 0:
-            for ent in grid_instance.removed:
-                is_fish = isinstance(ent, Fish)
+            for is_fish, rx, ry in removed:
                 img = fish_img if is_fish else shark_img
                 shd = fish_shadow if is_fish else shark_shadow
                 img.set_alpha(fade)
                 shd.set_alpha(fade)
-                for ax, ay in origins(ent.px, ent.py):
+                for ax, ay in origins(rx, ry):
                     screen.blit(shd, shd.get_rect(center=(ax + center + 2, ay + center + 2)))
                     screen.blit(img, img.get_rect(center=(ax + center, ay + center)))
                 img.set_alpha(255)
                 shd.set_alpha(255)
 
-        # Living entities, gliding from their previous cell to the current one
-        for y in range(GRID_SIZE):
-            row_cells = grid_cells[y]
-            for x in range(GRID_SIZE):
-                cell_content = row_cells[x]
-                if cell_content is None:
-                    continue
-                gx = interp(cell_content.px, x)
-                gy = interp(cell_content.py, y)
-                is_fish = isinstance(cell_content, Fish)
-                img = fish_img if is_fish else shark_img
-                shd = fish_shadow if is_fish else shark_shadow
-                bubble = None if is_fish else get_energy_bubble(cell_content.energy)
-                for ax, ay in origins(gx, gy):
-                    screen.blit(shd, shd.get_rect(center=(ax + center + 2, ay + center + 2)))
-                    screen.blit(img, img.get_rect(center=(ax + center, ay + center)))
-                    if bubble is not None:
-                        screen.blit(bubble, (ax + CELL_SIZE - 1 - 12 - 8, ay + CELL_SIZE - 1 - 12 - 8))
+        # Living entities (read from World), gliding from their previous cell to the current one
+        living = [(e, True) for e in world.fish_dict.values()]
+        living += [(e, False) for e in world.shark_dict.values()]
+        for ent, is_fish in living:
+            prev_x, prev_y = prev_pos.get(id(ent), (ent.x, ent.y))
+            gx = interp(prev_x, ent.x)
+            gy = interp(prev_y, ent.y)
+            img = fish_img if is_fish else shark_img
+            shd = fish_shadow if is_fish else shark_shadow
+            bubble = None if is_fish else get_energy_bubble(ent.get_stamina())
+            for ax, ay in origins(gx, gy):
+                screen.blit(shd, shd.get_rect(center=(ax + center + 2, ay + center + 2)))
+                screen.blit(img, img.get_rect(center=(ax + center, ay + center)))
+                if bubble is not None:
+                    screen.blit(bubble, (ax + CELL_SIZE - 1 - 12 - 8, ay + CELL_SIZE - 1 - 12 - 8))
 
         if paused:
             screen.blit(veil, (0, 0))
@@ -392,7 +276,7 @@ def launch_interface(external_grid=None):
         # --- DASHBOARD ---
         screen.blit(dashboard_bg, (0, GAME_SIZE))
         values = [
-            f"{world_turn:05d}",
+            f"{world.turn:05d}",
             f"{count_fish:03d} (🐟)",
             f"{count_shark:03d} (🦈)",
             f"{60//logic_delay} step/s",
@@ -411,6 +295,6 @@ def launch_interface(external_grid=None):
     pygame.quit()
     sys.exit()
 
+
 if __name__ == "__main__":
-    my_world_grid = Grid(15) 
-    launch_interface(my_world_grid)
+    launch_interface()
