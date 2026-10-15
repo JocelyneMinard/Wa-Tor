@@ -1,11 +1,16 @@
 # This file manages the simulation grid
+import configparser
+
+# Création de l'objet et lecture du fichier
+config = configparser.ConfigParser()
+config.read('config.ini')
 
 class Grid:
-    def __init__(self, size: int) -> None:
+    def __init__(self, size: int, style_sea : str, style_fish: str, style_shark : str) -> None:
         self.size = size
-        self.style_sea = "\033[96m██\033[0m"
-        self.style_fish = "\033[96m\033[106m🐟\033[0m"
-        self.style_shark = "\033[96m\033[106m🦈\033[0m"
+        self.style_sea = style_sea
+        self.style_fish = style_fish
+        self.style_shark = style_shark
         self.init_grid()
 
     def init_grid(self) -> None:

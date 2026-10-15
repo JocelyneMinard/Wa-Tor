@@ -5,9 +5,9 @@ from classes.shark import Shark
 import random
 
 class World:
-    def __init__(self, my_grid, grid_size: int) -> None:
-        self.population_init_fish = 5
-        self.population_init_shark = 3
+    def __init__(self, my_grid, grid_size: int, fish_number, shark_number) -> None:
+        self.population_init_fish = fish_number
+        self.population_init_shark = shark_number
         self.my_grid = my_grid  
         self.grid_size = grid_size
         self.fish_dict = {}
