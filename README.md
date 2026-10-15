@@ -35,6 +35,7 @@ Sharks play before fish on each turn. The populations therefore evolve in cycles
 .
 ├── main.py              # Entry point: launches the simulation in the console
 ├── interface.py         # Launches the graphical version of the simulation (pygame)
+├── config.ini           # File with principal var
 ├── requierement.txt     # Python dependencies
 ├── classes/
 │   ├── world.py         # World class (simulation management)
@@ -52,7 +53,11 @@ Sharks play before fish on each turn. The populations therefore evolve in cycles
 ## ⚙️ Installation
 
 ```bash
-pip install pygame-ce or launch requierement.txt
+pip install pygame-ce 
+```
+Or
+```bash
+pip install -r requirements.txt 
 ```
 
 `pygame` is only needed for the graphical version (`interface.py`). The console version (`Main.py`) does not need it.
@@ -141,7 +146,7 @@ We all worked together; everyone was responsible for their own file, though some
 |---|---|
 | **Matisse** | Graphical interface (`interface.py`) and fish (`fish.py`); helped on `world.py` and `grid.py`; also wrote the README |
 | **Romain** | Sharks (`shark.py`); helped on `world.py` and `grid.py` |
-| **Jocelyne** | `world.py` and `grid.py`; helped on fish (`fish.py`) and sharks (`shark.py`) |
+| **Jocelyne** | `world.py`, `grid.py` and `config.ini`; helped on fish (`fish.py`) and sharks (`shark.py`) |
 
 <sub>[⬆ Back to top / Retour en haut](#top) · [🇫🇷 Version française](#francais)</sub>
 
@@ -177,6 +182,7 @@ Les requins jouent avant les poissons à chaque tour. Les proportions de poisson
 .
 ├── main.py              # Point d'entrée : lance la simulation dans la console
 ├── interface.py         # Lance la version graphique de la simulation (pygame)
+├── config.ini           # Fichier avec les variables principales
 ├── requierement.txt     # Dépendances Python
 ├── classes/
 │   ├── world.py         # Classe World (gestion de la simulation)
@@ -195,7 +201,11 @@ Les requins jouent avant les poissons à chaque tour. Les proportions de poisson
 ## ⚙️ Installation
 
 ```bash
-pip install pygame-ce ou lancer le fichier requirement.txt
+pip install pygame-ce 
+```
+Ou
+```bash
+pip install -r requirements.txt 
 ```
 
 `pygame` n'est nécessaire que pour la version graphique (`interface.py`). La version console (`Main.py`) n'en a pas besoin.
@@ -284,7 +294,7 @@ Nous avons tous travaillé ensemble, chacun était responsable de son fichier, m
 |---|---|
 | **Matisse** | Interface graphique (`interface.py`) et poissons (`fish.py`) ; aide sur `world.py` et `grid.py` ; a aussi rédigé le README |
 | **Romain** | Requins (`shark.py`) ; aide sur `world.py` et `grid.py` |
-| **Jocelyne** | `world.py` et `grid.py` ; aide sur les poissons (`fish.py`) et les requins (`shark.py`) |
+| **Jocelyne** | `world.py`, `grid.py` et `config.ini` ; aide sur les poissons (`fish.py`) et les requins (`shark.py`) |
 
 
 <sub>[⬆ Retour en haut / Back to top](#top) · [🇬🇧 English version](#english)</sub>

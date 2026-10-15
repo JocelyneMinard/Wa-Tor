@@ -140,7 +140,7 @@ def launch_interface(external_grid: Optional[Grid] = None) -> None:
         sea_blue = max(110, min(150, int(130 + lvl)))
         sea_green = max(130, min(170, int(150 + lvl * 0.5)))
         tile = pygame.Surface((CELL_SIZE - 1, CELL_SIZE - 1), pygame.SRCALPHA)
-        pygame.draw.rect(tile, (14, sea_green, sea_blue), tile.get_rect(), border_radius=4)
+        pygame.draw.rect(tile, (14, sea_green, sea_blue), tile.get_rect(), border_radius=0)
         sea_tiles[lvl] = tile.convert_alpha()
 
     # EN: Shark energy badges, cached by energy value. FR: pastilles d'énergie, en cache par valeur.
