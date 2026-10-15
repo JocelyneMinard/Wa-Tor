@@ -76,7 +76,10 @@ class World:
                     target_x = (x + dx) % self.grid_size
                     target_y = (y + dy) % self.grid_size
                     # Find and delete fish from position
-                    entity.eat_fish(target_x, target_y, self.fish_dict.items(),  self.fish_dict)
+                    for fid, fobj in list(self.fish_dict.items()):
+                        if fobj.get_x() == target_x and fobj.get_y() == target_y:
+                            del self.fish_dict[fid]
+                    entity.eat()
                     moved = True
                     self.my_grid.affect_entity(x, y, "empty")
                     entity.decrease_stamina()
@@ -94,8 +97,9 @@ class World:
                     entity.decrease_stamina()
                
                 if entity.get_stamina() <= 0:
-                    entity.remove_entity(self.shark_dict, entity_id)
-                    # remove cell when shark just move or origin cell if don.t move
+                    # delete shark
+                    del self.shark_dict[entity_id]
+                    # remove cell when shark just move or origin cell if don' move
                     if moved:
                         current_x = (x + dx) % self.grid_size
                         current_y = (y + dy) % self.grid_size

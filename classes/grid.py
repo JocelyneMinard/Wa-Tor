@@ -1,3 +1,4 @@
+# This class manages the grid
 
 class Grid:
     def __init__(self, size: int, style_sea : str, style_fish: str, style_shark : str) -> None:

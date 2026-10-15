@@ -32,9 +32,3 @@ class Fish:
             self.age = 0
             return True
         return False 
-
-    # Dying 
-    def remove_entity(self, entity_dict: dict, entity_id: int) -> None:
-        """delete the entity from the dictionary if it exists"""
-        if entity_id in entity_dict:
-            del entity_dict[entity_id]
